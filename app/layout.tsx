@@ -34,7 +34,7 @@ export const metadata: Metadata = {
     description: "Explore TOM's portfolio of stunning web design and development projects. Specializing in modern UI/UX and innovative digital experiences.",
     images: [
       {
-        url: "/logo.png", // Replace with your logo
+        url: "/logo.svg",
         width: 1200,
         height: 630,
         alt: "TOM Portfolio Logo",
@@ -47,14 +47,17 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "TOM -  Designer & Developer Portfolio",
     description: "Explore TOM's portfolio of stunning web design and development projects.",
-    images: ["/logo.png"], // Replace with your logo
+    images: ["/logo.svg"],
     creator: "@yourtwitter", // Add your Twitter handle
   },
   
   // Icons and manifest
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon.ico",
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" }
+    ],
+    shortcut: "/favicon.svg",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
@@ -99,7 +102,7 @@ export default function RootLayout({
     url: "https://tomm.one",
     jobTitle: " Designer & Developer",
     description: " designer and developer specializing in modern web design, UI/UX, and innovative digital experiences.",
-    image: "https://tomm.one/logo.png",
+    image: "https://tomm.one/logo.svg",
     sameAs: [
       "https://twitter.com/yourtwitter",
       "https://linkedin.com/in/yourlinkedin",
