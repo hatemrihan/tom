@@ -277,7 +277,7 @@ const Exolore = () => {
             startOnView={true}
             showCursor={true}
             blinkCursor={true}
-            loop={true}
+            loop={false}
           >
             Work.
           </TypingAnimation>
@@ -287,17 +287,17 @@ const Exolore = () => {
       {/* ⚙️ CUSTOMIZE IMAGE SCALE - Change these values to make image bigger or smaller */}
       {/* Scale: 1.0 = original, 0.8 = 80% smaller, 1.2 = 20% bigger */}
       <style jsx>{`
-        .scaled-image-mobile { transform: scale(0.5); transform-origin: left center; }
+        .scaled-image-mobile { transform: scale(0.35); transform-origin: left center; }
         @media (min-width: 768px) and (max-width: 1023px) {
-          .scaled-image-mobile { transform: scale(0.85); }
+          .scaled-image-mobile { transform: scale(0.5); }
         }
         @media (min-width: 1024px) {
-          .scaled-image-mobile { transform: scale(0.7); }
+          .scaled-image-mobile { transform: scale(0.45); }
         }
       `}</style>
 
       {/* Container for all projects - vertical spacing between items */}
-      <div className="w-full -space-y-40  md:space-y-2 lg:space-y-2">
+      <div className="w-full -space-y-80 md:-space-y-60 lg:-space-y-60">
         
         {/* Loop through each project */}
         {projects.slice(0, 4).map((project, index) => {
@@ -310,16 +310,16 @@ const Exolore = () => {
             });
 
             return (
-              // Individual project container with inView animation
+              // Individual project container with inView animation - plays once, slowly
               <motion.div
                 ref={projectRef}
                 key={project.id} 
                 className="relative w-full px-4 lg:-mx-40"
-                initial={{ opacity: 0, y: 50 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+                initial={{ opacity: 0, y: 80 }}
+                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
                 transition={{ 
-                  duration: 0.8, 
-                  delay: 0.2,
+                  duration: 1.5, 
+                  delay: 0.3,
                   ease: "easeOut" 
                 }}
               >
@@ -358,7 +358,7 @@ const Exolore = () => {
               </div>
               
               {/* Text container - absolutely positioned on the RIGHT side */}
-              <div className="absolute right-8 lg:right-24 top-1/2 -translate-y-1/2">
+              <div className="absolute right-0 lg:right-44 top-1/2 -translate-y-1/2">
                 {/* Text alignment to the right */}
                 <div className="text-center">
                   {/* Project name with typing animation */}

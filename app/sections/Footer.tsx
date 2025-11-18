@@ -8,7 +8,7 @@ const Footer = () => {
       
       {/* Main Heading - Centered and Bold with Highlighter effect */}
       <div className="text-center mb-32 md:mb-40 -mt-30">
-        <h2 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl font-bold leading-tight tracking-tight">
+        <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-6xl font-bold leading-tight tracking-tight">
           
             Are You <Highlighter 
             action="highlight" 
