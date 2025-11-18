@@ -15,12 +15,12 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   // Basic metadata
   title: {
-    default: "TOM - Creative Designer & Developer Portfolio",
+    default: "TOM -  Designer & Developer Portfolio",
     template: "%s | TOM Portfolio"
   },
-  description: "TOM is a creative designer and developer specializing in modern web design, UI/UX, and innovative digital experiences. Explore my portfolio of stunning projects and get in touch for collaborations.",
-  keywords: ["TOM", "portfolio", "web design", "UI/UX designer", "creative developer", "web developer", "digital designer", "Hatem", "modern web design"],
-  authors: [{ name: "TOM", url: "https://yourdomainhere.com" }],
+  description: "TOM is a  designer and developer specializing in modern web design, UI/UX, and innovative digital experiences. Explore my portfolio of stunning projects and get in touch for collaborations.",
+  keywords: ["TOM", "portfolio", "web design", "UI/UX designer", " developer", "web developer", "digital designer", "Hatem", "modern web design"],
+  authors: [{ name: "TOM", url: "https://tomm.one" }],
   creator: "TOM",
   publisher: "TOM",
   
@@ -28,9 +28,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://yourdomainhere.com",
+    url: "https://tomm.one",
     siteName: "TOM Portfolio",
-    title: "TOM - Creative Designer & Developer Portfolio",
+    title: "TOM -  Designer & Developer Portfolio",
     description: "Explore TOM's portfolio of stunning web design and development projects. Specializing in modern UI/UX and innovative digital experiences.",
     images: [
       {
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   // Twitter Card metadata
   twitter: {
     card: "summary_large_image",
-    title: "TOM - Creative Designer & Developer Portfolio",
+    title: "TOM -  Designer & Developer Portfolio",
     description: "Explore TOM's portfolio of stunning web design and development projects.",
     images: ["/logo.png"], // Replace with your logo
     creator: "@yourtwitter", // Add your Twitter handle
@@ -80,9 +80,9 @@ export const metadata: Metadata = {
   },
   
   // Additional metadata
-  metadataBase: new URL("https://yourdomainhere.com"), // Replace with your actual domain
+  metadataBase: new URL("https://tomm.one"),
   alternates: {
-    canonical: "https://yourdomainhere.com",
+    canonical: "https://tomm.one",
   },
 };
 
@@ -96,17 +96,17 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "TOM (Hatem)",
-    url: "https://yourdomainhere.com",
-    jobTitle: "Creative Designer & Developer",
-    description: "Creative designer and developer specializing in modern web design, UI/UX, and innovative digital experiences.",
-    image: "https://yourdomainhere.com/logo.png",
+    url: "https://tomm.one",
+    jobTitle: " Designer & Developer",
+    description: " designer and developer specializing in modern web design, UI/UX, and innovative digital experiences.",
+    image: "https://tomm.one/logo.png",
     sameAs: [
       "https://twitter.com/yourtwitter",
       "https://linkedin.com/in/yourlinkedin",
       "https://github.com/yourgithub",
       // Add your social media links
     ],
-    knowsAbout: ["Web Design", "UI/UX Design", "Web Development", "Creative Design", "Digital Design"],
+    knowsAbout: ["Web Design", "UI/UX Design", "Web Development", " Design", "Digital Design"],
   };
 
   return (

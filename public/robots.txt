@@ -5,7 +5,7 @@ User-agent: *
 Allow: /
 
 # Sitemap location
-Sitemap: https://yourdomainhere.com/sitemap.xml
+Sitemap: https://tomm.one/sitemap.xml
 
 # Disallow admin pages (if any)
 # Disallow: /admin/
