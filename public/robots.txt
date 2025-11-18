@@ -1,0 +1,12 @@
+# robots.txt for TOM Portfolio
+# This file tells search engines which pages they can crawl
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://yourdomainhere.com/sitemap.xml
+
+# Disallow admin pages (if any)
+# Disallow: /admin/
+
