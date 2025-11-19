@@ -77,7 +77,9 @@ const First = () => {
                   Wanna Hire This Guy?&nbsp;&nbsp;&nbsp;
                 </span>
               </div>
+              
             </div>
+            
           )}
           
 
@@ -95,6 +97,7 @@ const First = () => {
             }}
           >
             {/* The actual video element */}
+            
             <video
               className="w-full h-full object-cover"
               autoPlay
@@ -105,12 +108,17 @@ const First = () => {
               <source src="/videos/hatem.mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
+            
+            
           </div>
         </div>
+        
 
         {/* Spacer to enable scrolling - makes page tall enough to scroll */}
         <div className="h-[300vh]"></div>
+        
       </div>
+      
     </>
   );
 };

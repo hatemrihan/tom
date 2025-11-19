@@ -265,10 +265,13 @@ const Exolore = () => {
 
   return (
     // Main container with padding and white background
-    <section className="w-full min-h-screen bg-[#f2f2f2]  px-6 md:px-12 lg:px-24">
+    <section className="w-full min-h-screen bg-[#f2f2f2] px-6 md:px-12 lg:px-24 overflow-x-hidden">
       
       {/* Large typography headline with typing animation */}
       <div className="mb-4 md:mb-10 lg:mb-50 text-center">
+      <div
+      className='w-full h-0.5 opacity-20 font-light bg-black/50 '
+      />
         <h2 className="text-4xl font-bold leading-tight tracking-tight">
           Explore My{' '}
           <TypingAnimation
@@ -281,18 +284,22 @@ const Exolore = () => {
           >
             Work.
           </TypingAnimation>
+          <div
+      className='w-full h-0.5 opacity-20 font-light bg-black/50 '
+      />
         </h2>
+        
       </div>
+
+    
 
       {/* ⚙️ CUSTOMIZE IMAGE SCALE - Change these values to make image bigger or smaller */}
       {/* Scale: 1.0 = original, 0.8 = 80% smaller, 1.2 = 20% bigger */}
       <style jsx>{`
-        .scaled-image-mobile { transform: scale(0.35); transform-origin: left center; }
+        .scaled-image-mobile { transform: scale(0.4); transform-origin: left center; }
         @media (min-width: 768px) and (max-width: 1023px) {
-          .scaled-image-mobile { transform: scale(0.5); }
         }
         @media (min-width: 1024px) {
-          .scaled-image-mobile { transform: scale(0.45); }
         }
       `}</style>
 
@@ -305,7 +312,7 @@ const Exolore = () => {
             // Individual project container with smooth animation
             <motion.div
               key={project.id}
-              className="relative w-full px-4 lg:-mx-40"
+              className="relative w-full px-4"
               initial={{ opacity: 0, y: 80 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -321,15 +328,15 @@ const Exolore = () => {
               <div className="relative w-auto h-auto">
                 
                 {/* Actual image/video wrapper with scaling - clickable */}
-                <div 
-                  className="relative w-screen h-[70vh] md:h-[75vh] lg:h-[80vh] scaled-image-mobile cursor-pointer group"
+                <div
+                  className="relative w-full max-w-full h-[70vh] md:h-[75vh] lg:h-[80vh] scaled-image-mobile cursor-pointer group overflow-hidden"
                   onClick={() => handleProjectClick(project)}
                 >
                   {/* Show video if isVideo is true, otherwise show image */}
                   {project.isVideo ? (
                     <video
                       src={project.image as string}
-                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      className="w-full h-full mr-0 lg:mr-90  object-contain transition-transform duration-500 group-hover:scale-105"
                       autoPlay
                       loop
                       muted
@@ -349,7 +356,7 @@ const Exolore = () => {
               </div>
               
               {/* Text container - absolutely positioned on the RIGHT side */}
-              <div className="absolute right-0 lg:right-44 top-1/2 -translate-y-1/2">
+              <div className="absolute right-4 lg:right-84 top-1/2 -translate-y-1/2 z-10">
                 {/* Text alignment to the right */}
                 <div className="text-center">
                   {/* Project name with typing animation */}
