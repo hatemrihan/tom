@@ -1,9 +1,9 @@
 'use client';
 
 // This imports React hooks
-import React, { useState, useRef } from 'react';
-// Import motion and useInView for animations
-import { motion, useInView } from 'motion/react';
+import React, { useState } from 'react';
+// Import motion for animations
+import { motion } from 'motion/react';
 // Import typing animation component
 import { TypingAnimation } from '@/components/ui/typing-animation';
 
@@ -301,28 +301,19 @@ const Exolore = () => {
         
         {/* Loop through each project */}
         {projects.slice(0, 4).map((project, index) => {
-          // Create a ref for each project to track if it's in view
-          const ProjectWrapper = () => {
-            const projectRef = useRef(null);
-            const isInView = useInView(projectRef, { 
-              once: true, 
-              margin: "-100px" 
-            });
-
-            return (
-              // Individual project container with inView animation - plays once, slowly
-              <motion.div
-                ref={projectRef}
-                key={project.id} 
-                className="relative w-full px-4 lg:-mx-40"
-                initial={{ opacity: 0, y: 80 }}
-                animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 80 }}
-                transition={{ 
-                  duration: 1.5, 
-                  delay: 0.3,
-                  ease: "easeOut" 
-                }}
-              >
+          return (
+            // Individual project container with smooth animation
+            <motion.div
+              key={project.id}
+              className="relative w-full px-4 lg:-mx-40"
+              initial={{ opacity: 0, y: 80 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 1.5,
+                delay: index * 0.2, // Stagger animation based on index
+                ease: "easeOut"
+              }}
+            >
                 {/* Flex container to hold the image on the left */}
                 <div className="flex justify-start">
               
@@ -369,7 +360,7 @@ const Exolore = () => {
                   {/* View project link */}
                   <button 
                     onClick={() => handleProjectClick(project)}
-                    className="mt-1 text-xs md:text-sm font-bold text-gray-800 hover:text-black transition-colors uppercase tracking-wide"
+                    className="mt-1 text-xs md:text-sm font-bold text-gray-800 hover:text-black transition-colors uppercase tracking-wide cursor-pointer"
                   >
                     View Project →
                   </button>
@@ -387,10 +378,7 @@ const Exolore = () => {
               </div>
             </div>
           </motion.div>
-            );
-          };
-          
-          return <ProjectWrapper key={project.id} />;
+          );
         })}
         
       </div>
