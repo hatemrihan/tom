@@ -25,6 +25,6 @@ export default clientPromise;
 // Database connection helper
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
   const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || 'ensain_portfolio');
+  const db = client.db(process.env.MONGODB_DB || 'tom_portfolio');
   return { client, db };
 } 

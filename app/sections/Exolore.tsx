@@ -15,7 +15,7 @@ import JayashFourImage from '../../public/images/JayashFour-image.png';
 import JayashFiveImage from '../../public/images/JayashFive-image.png';
 import JayashSixImage from '../../public/images/JayashSix-image.png';
 import JayashSevenImage from '../../public/images/JayashSeven-image.png';
-import UnlimitedOneImage from '../../public/images/UnlimitedOne-image.jpg'; 
+import UnlimitedOneImage from '../../public/images/UnlimitedOne-image.jpg';
 import UnlimitedTwoImage from '../../public/images/UnlimitedTwo-image.png';
 import UnlimitedThreeImage from '../../public/images/UnlimitedThree-image.png';
 import UnlimitedFourImage from '../../public/images/UnlimitedFour-image.png';
@@ -52,7 +52,7 @@ const projects: Project[] = [
     name: 'JAYASH',
     image: JayashOneImage,
     previewImages: [
-        // Images imported for deployment
+      // Images imported for deployment
       JayashOneImage,
       JayashTwoImage,
       JayashThreeImage,
@@ -62,7 +62,7 @@ const projects: Project[] = [
       JayashSevenImage,
 
     ],
-    link: 'https://ja-yash.com',
+    link: 'https://jayashatelier.com',
     description: 'Collaboration on the graphic design for album. Custom typeface inspired by modern lettering, designed fan-style merch, and developed cohesive packaging working closely with the artist.',
     type: 'E commerce - Branding.'
   },
@@ -86,12 +86,12 @@ const projects: Project[] = [
     name: 'NE - COACH PROFILE',
     image: '/videos/nader.mp4',
     isVideo: true,
-    previewImages:[
-        NaderOneImage,
-        NaderTwoImage,
-        NaderThreeImage,
-        NaderFourImage,
-      
+    previewImages: [
+      NaderOneImage,
+      NaderTwoImage,
+      NaderThreeImage,
+      NaderFourImage,
+
     ],
     link: 'https://nader-emad.vercel.app/',
     description: 'Turning it digital, Created a powerful UserInterface where they can subscribe and get the coaching services through live chat through talk-js.',
@@ -102,12 +102,12 @@ const projects: Project[] = [
     name: 'FARAG',
     image: FaragOneImage,
     previewImages: [
-        FaragOneImage,
-        FaragTwoImage,
-        FaragThreeImage,
-        FaragFourImage,
-        FaragFiveImage,
-        FaragSixImage,
+      FaragOneImage,
+      FaragTwoImage,
+      FaragThreeImage,
+      FaragFourImage,
+      FaragFiveImage,
+      FaragSixImage,
     ],
     link: 'https://faragg.netlify.app/',
     description: 'Creating a brand identity for a photography studio, with a focus on minimalist design principles, choosen design, threejs, gsap and framer motion.',
@@ -128,12 +128,12 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
 
   return (
     // Full-screen overlay with backdrop blur
-    <div 
+    <div
       className="fixed inset-0 z-50 flex items-center justify-center  bg-black/50 animate-in fade-in duration-200"
       onClick={onClose}
     >
       {/* Modal container - macOS style - smaller on mobile */}
-      <div 
+      <div
         className="relative w-[90vw] md:w-full max-w-sm md:max-w-4xl max-h-[70vh] md:max-h-[85vh] bg-white dark:bg-gray-900 overflow-hidden animate-in zoom-in-95 duration-300 mx-4 rounded-lg"
         onClick={(e) => e.stopPropagation()}
       >
@@ -141,7 +141,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
         <div className=" px-4 py-3 flex items-center gap-2 bg-[#f2f2f2] ">
           <div className="flex gap-2">
             {/* Close button (red) */}
-            <button 
+            <button
               onClick={onClose}
               className="w-3 h-3 rounded-full bg-red-500 hover:bg-red-600 transition-colors"
             />
@@ -186,7 +186,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
                 <h2 className="text-base mt-3 text-center  md:text-xl font-bold text-gray-900 dark:text-white ">
                   {project.name}
                 </h2>
-                
+
               </div>
             </div>
 
@@ -201,7 +201,7 @@ const ProjectModal = ({ project, isOpen, onClose }: ProjectModalProps) => {
 
             {/* Details Section */}
             <div className="mb-3 md:mb-4">
-            
+
               <p className="text-xs md:text-sm text-gray-700 dark:text-gray-300">
                 <span className="font-medium">Type:</span> {project.type || ""}
               </p>
@@ -266,12 +266,12 @@ const Exolore = () => {
   return (
     // Main container with padding and white background
     <section className="w-full min-h-screen bg-[#f2f2f2] px-6 md:px-12 lg:px-24 overflow-x-hidden">
-      
+
       {/* Large typography headline with typing animation */}
       <div className="mb-4 md:mb-10 lg:mb-50 text-center">
-      <div
-      className='w-full h-0.5 opacity-20 font-light bg-black/50 '
-      />
+        <div
+          className='w-full h-0.5 opacity-20 font-light bg-black/50 '
+        />
         <h2 className="text-4xl font-bold leading-tight tracking-tight">
           Explore My{' '}
           <TypingAnimation
@@ -285,13 +285,13 @@ const Exolore = () => {
             Work.
           </TypingAnimation>
           <div
-      className='w-full h-0.5 opacity-20 font-light bg-black/50 '
-      />
+            className='w-full h-0.5 opacity-20 font-light bg-black/50 '
+          />
         </h2>
-        
+
       </div>
 
-    
+
 
       {/* ⚙️ CUSTOMIZE IMAGE SCALE - Change these values to make image bigger or smaller */}
       {/* Scale: 1.0 = original, 0.8 = 80% smaller, 1.2 = 20% bigger */}
@@ -305,7 +305,7 @@ const Exolore = () => {
 
       {/* Container for all projects - vertical spacing between items */}
       <div className="w-full -space-y-80 md:-space-y-60 lg:-space-y-60">
-        
+
         {/* Loop through each project */}
         {projects.slice(0, 4).map((project, index) => {
           return (
@@ -321,77 +321,77 @@ const Exolore = () => {
                 ease: "easeOut"
               }}
             >
-                {/* Flex container to hold the image on the left */}
-                <div className="flex justify-start">
-              
-              {/* Image container - scaled based on screen size */}
-              <div className="relative w-auto h-auto">
-                
-                {/* Actual image/video wrapper with scaling - clickable */}
-                <div
-                  className="relative w-full max-w-full h-[70vh] md:h-[75vh] lg:h-[80vh] scaled-image-mobile cursor-pointer group overflow-hidden"
-                  onClick={() => handleProjectClick(project)}
-                >
-                  {/* Show video if isVideo is true, otherwise show image */}
-                  {project.isVideo ? (
-                    <video
-                      src={project.image as string}
-                      className="w-full h-full mr-0 lg:mr-90  object-contain transition-transform duration-500 group-hover:scale-105"
-                      autoPlay
-                      loop
-                      muted
-                      playsInline
-                    />
-                  ) : (
-                    <img
-                      src={typeof project.image === 'string' ? project.image : project.image.src}
-                      alt={project.name}
-                      className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
-                    />
-                  )}
-                  
-                  {/* Hover overlay effect */}
-                  <div className="absolute inset-0 bg-black opacity-0  transition-opacity duration-300" />
-                </div>
-              </div>
-              
-              {/* Text container - absolutely positioned on the RIGHT side */}
-              <div className="absolute right-4 lg:right-84 top-1/2 -translate-y-1/2 z-10">
-                {/* Text alignment to the right */}
-                <div className="text-center">
-                  {/* Project name with typing animation */}
-                  <h2 className="font-open-sans-light text-sm md:text-base lg:text-lg tracking-wide text-gray-800 mb-2 uppercase">
-                    {project.name}
-                  </h2>
-                  
-                  {/* View project link */}
-                  <button 
+              {/* Flex container to hold the image on the left */}
+              <div className="flex justify-start">
+
+                {/* Image container - scaled based on screen size */}
+                <div className="relative w-auto h-auto">
+
+                  {/* Actual image/video wrapper with scaling - clickable */}
+                  <div
+                    className="relative w-full max-w-full h-[70vh] md:h-[75vh] lg:h-[80vh] scaled-image-mobile cursor-pointer group overflow-hidden"
                     onClick={() => handleProjectClick(project)}
-                    className="mt-1 text-xs md:text-sm font-bold text-gray-800 hover:text-black transition-colors uppercase tracking-wide cursor-pointer"
                   >
-                    View Project →
-                  </button>
-                  
-                  {/* View Live Site link */}
-                  <a 
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="font-open-sans-light block mt-3 text-xs md:text-sm text-gray-600 hover:text-gray-800 transition-colors"
-                  >
-                    View Live Site ↗
-                  </a>
+                    {/* Show video if isVideo is true, otherwise show image */}
+                    {project.isVideo ? (
+                      <video
+                        src={project.image as string}
+                        className="w-full h-full mr-0 lg:mr-90  object-contain transition-transform duration-500 group-hover:scale-105"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                      />
+                    ) : (
+                      <img
+                        src={typeof project.image === 'string' ? project.image : project.image.src}
+                        alt={project.name}
+                        className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
+                      />
+                    )}
+
+                    {/* Hover overlay effect */}
+                    <div className="absolute inset-0 bg-black opacity-0  transition-opacity duration-300" />
+                  </div>
+                </div>
+
+                {/* Text container - absolutely positioned on the RIGHT side */}
+                <div className="absolute right-4 lg:right-84 top-1/2 -translate-y-1/2 z-10">
+                  {/* Text alignment to the right */}
+                  <div className="text-center">
+                    {/* Project name with typing animation */}
+                    <h2 className="font-open-sans-light text-sm md:text-base lg:text-lg tracking-wide text-gray-800 mb-2 uppercase">
+                      {project.name}
+                    </h2>
+
+                    {/* View project link */}
+                    <button
+                      onClick={() => handleProjectClick(project)}
+                      className="mt-1 text-xs md:text-sm font-bold text-gray-800 hover:text-black transition-colors uppercase tracking-wide cursor-pointer"
+                    >
+                      View Project →
+                    </button>
+
+                    {/* View Live Site link */}
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-open-sans-light block mt-3 text-xs md:text-sm text-gray-600 hover:text-gray-800 transition-colors"
+                    >
+                      View Live Site ↗
+                    </a>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
+            </motion.div>
           );
         })}
-        
+
       </div>
 
       {/* Project Modal */}
-      <ProjectModal 
+      <ProjectModal
         project={selectedProject}
         isOpen={isModalOpen}
         onClose={handleCloseModal}

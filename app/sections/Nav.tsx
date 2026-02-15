@@ -20,19 +20,19 @@ const Nav = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 md:py-8 flex items-center justify-between bg-[#f2f2f2]">
         {/* Logo on the left */}
         <Link href='/'>
-        <div className="text-xl md:text-2xl font-medium tracking-tight text-black ">
-          TOM
-        </div>
+          <div className="text-xl md:text-2xl font-medium tracking-tight text-black ">
+            TOM
+          </div>
         </Link>
 
         {/* Top navigation links - CONTACT on mobile, all links on desktop */}
         <div className="flex items-center gap-6 text-sm uppercase tracking-wide ">
-          <a href="#manifesto" className="hidden md:flex hover:text-gray-600 transition-colors items-center gap-1">
+          {/* <a href="#manifesto" className="hidden md:flex hover:text-gray-600 transition-colors items-center gap-1">
             MANIFESTO <span className="text-xs">↗</span>
           </a>
           <a href="#webflow" className="hidden md:flex hover:text-gray-600 transition-colors items-center gap-1">
             WEBFLOW  <span className="text-xs">↗</span>
-          </a>
+          </a> */}
           <a href="/contact" className="hover:text-gray-600 transition-colors flex items-center gap-1">
             CONTACT <span>→</span>
           </a>
@@ -42,28 +42,25 @@ const Nav = () => {
       {/* Hamburger menu button - FIXED AT BOTTOM RIGHT */}
       <button
         onClick={toggleMenu}
-        className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-50 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center focus:outline-none   hover:border-black transition-colors duration-300 group"
+        className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-50 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center focus:outline-none   hover:border-black transition-colors duration-300 group cursor-pointer"
         aria-label="Toggle menu"
       >
         {/* Top line of hamburger */}
         <span
-          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out ${
-            isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2'
-          }`}
+          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out ${isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2 cursor-pointer'
+            }`}
         />
         {/* Bottom line of hamburger */}
         <span
-          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out cursor-pointer ${
-            isOpen ? '-rotate-45 translate-y-0' : 'translate-y-2'
-          }`}
+          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out cursor-pointer ${isOpen ? '-rotate-45 translate-y-0' : 'translate-y-2 cursor-pointer'
+            }`}
         />
       </button>
 
       {/* Full-screen menu overlay */}
       <div
-        className={`fixed inset-0 bg-[#f2f2f2] z-40 transition-all duration-700 ease-in-out ${
-          isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
+        className={`fixed inset-0 bg-[#f2f2f2] z-40 transition-all duration-700 cursor-pointer ease-in-out ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible cursor-pointer'
+          }`}
       >
         {/* Menu content container - RIGHT side aligned */}
         <div className="flex flex-col justify-between h-full py-24 pr-12 md:pr-24 lg:pr-32">
@@ -71,9 +68,8 @@ const Nav = () => {
           <ul className="space-y-3 md:space-y-4 text-right">
             {/* HOME */}
             <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '100ms' }}
             >
               <a
@@ -87,10 +83,9 @@ const Nav = () => {
             </li>
 
             {/* ABOUT US */}
-            <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+            {/* <li
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '150ms' }}
             >
               <a
@@ -101,13 +96,12 @@ const Nav = () => {
                 ABOUT US
                 <span className="text-lg">→</span>
               </a>
-            </li>
+            </li> */}
 
             {/* WORK */}
-            <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+            {/* <li
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '200ms' }}
             >
               <a
@@ -118,16 +112,15 @@ const Nav = () => {
                 WORK
                 <span className="text-lg">→</span>
               </a>
-            </li>
+            </li> */}
 
             {/* SERVICES */}
-           
+
 
             {/* CONTACT */}
             <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '300ms' }}
             >
               <a
@@ -141,27 +134,25 @@ const Nav = () => {
             </li>
 
             {/* W. ENTERPRISE */}
-            <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+            {/* <li
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '350ms' }}
             >
               <a
-                href="#enterprise"
+                href="#webflow"
                 className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
                 onClick={toggleMenu}
               >
-                W. ENTERPRISE
+                W. WEBFLOW
                 <span className="text-lg">↗</span>
               </a>
-            </li>
+            </li> */}
 
             {/* MANIFESTO */}
-            <li
-              className={`transition-all duration-700 ease-out ${
-                isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-              }`}
+            {/* <li
+              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
+                }`}
               style={{ transitionDelay: '400ms' }}
             >
               <a
@@ -172,30 +163,28 @@ const Nav = () => {
                 MANIFESTO
                 <span className="text-lg">↗</span>
               </a>
-            </li>
+            </li> */}
           </ul>
 
           {/* Footer section - Bottom right */}
           <div className="text-right space-y-4">
             {/* Footer links */}
-            <div className="flex justify-end gap-6 text-sm uppercase tracking-wide">
+            {/* <div className="flex justify-end gap-6 text-sm uppercase tracking-wide">
               <a href="/privacy" className="hover:text-gray-600 transition-colors">
                 PRIVACY →
               </a>
               <a href="#careers" className="hover:text-gray-600 transition-colors">
                 CAREERS →
               </a>
-            </div>
+            </div> */}
 
             {/* Social media icons */}
             <div className="flex justify-end gap-4 text-2xl">
               <a href="https://x.com/hatemrihan?s=21" className="hover:text-gray-600 transition-colors">
                 𝕏
               </a>
-              <a href="#webflow" className="hover:text-gray-600 transition-colors">
-                W.
-              </a>
-              <a href="https://www.instagram.com/hatemrihan" className="hover:text-gray-600 transition-colors">
+
+              <a href="https://www.instagram.com/hatemrihann" className="hover:text-gray-600 transition-colors">
                 IG
               </a>
               <a href="https://www.linkedin.com/in/hatem-rihan-298753309?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" className="hover:text-gray-600 transition-colors">
