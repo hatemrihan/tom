@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   // Basic metadata
   title: {
-    default: "TOM -  Designer & Developer Portfolio",
+    default: "TOM - Software Engineer Portfolio",
     template: "%s | TOM Portfolio"
   },
-  description: "TOM is a  designer and developer specializing in modern web design, UI/UX, and innovative digital experiences. Explore my portfolio of stunning projects and get in touch for collaborations.",
-  keywords: ["TOM", "portfolio", "web design", "UI/UX designer", " developer", "web developer", "digital designer", "Hatem", "modern web design"],
+  description: "TOM is a Software Engineer specializing in full-stack development, robust system architectures, and scalable applications. Explore my portfolio of projects and get in touch for collaborations.",
+  keywords: ["TOM", "portfolio", "software engineer", "full-stack developer", "backend developer", "frontend developer", "Hatem", "web development"],
   authors: [{ name: "TOM", url: "https://tomm.one" }],
   creator: "TOM",
   publisher: "TOM",
@@ -30,8 +30,8 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://tomm.one",
     siteName: "TOM Portfolio",
-    title: "TOM -  Designer & Developer Portfolio",
-    description: "Explore TOM's portfolio of stunning web design and development projects. Specializing in modern UI/UX and innovative digital experiences.",
+    title: "TOM - Software Engineer Portfolio",
+    description: "Explore TOM's portfolio of software engineering projects. Specializing in full-stack development and scalable applications.",
     images: [
       {
         url: "/logo.svg",
@@ -45,8 +45,8 @@ export const metadata: Metadata = {
   // Twitter Card metadata
   twitter: {
     card: "summary_large_image",
-    title: "TOM -  Designer & Developer Portfolio",
-    description: "Explore TOM's portfolio of stunning web design and development projects.",
+    title: "TOM - Software Engineer Portfolio",
+    description: "Explore TOM's software engineering portfolio.",
     images: ["/logo.svg"],
     creator: "@yourtwitter", // Add your Twitter handle
   },
@@ -84,9 +84,6 @@ export const metadata: Metadata = {
   
   // Additional metadata
   metadataBase: new URL("https://tomm.one"),
-  alternates: {
-    canonical: "https://tomm.one",
-  },
 };
 
 export default function RootLayout({
@@ -100,8 +97,8 @@ export default function RootLayout({
     "@type": "Person",
     name: "TOM (Hatem)",
     url: "https://tomm.one",
-    jobTitle: " Designer & Developer",
-    description: " designer and developer specializing in modern web design, UI/UX, and innovative digital experiences.",
+    jobTitle: "Software Engineer",
+    description: "Software Engineer specializing in full-stack development, robust system architectures, and scalable applications.",
     image: "https://tomm.one/logo.svg",
     sameAs: [
       "https://twitter.com/yourtwitter",
@@ -109,7 +106,7 @@ export default function RootLayout({
       "https://github.com/yourgithub",
       // Add your social media links
     ],
-    knowsAbout: ["Web Design", "UI/UX Design", "Web Development", " Design", "Digital Design"],
+    knowsAbout: ["Software Engineering", "Full-Stack Development", "Backend Architecture", "Web Automation", "System Design"],
   };
 
   return (
