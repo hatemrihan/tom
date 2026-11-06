@@ -1,6 +1,6 @@
 import "server-only";
 import { registry, type RegistryEntry } from "@/components/library/registry";
-import { connectToDatabase, isDatabaseConfigured } from "@/lib/mongodb";
+import { adminClient, isDatabaseConfigured, publicClient } from "@/lib/supabase/server";
 
 /** Fields the admin can override per component. */
 export interface ComponentOverride {
@@ -18,30 +18,58 @@ export type ResolvedEntry = RegistryEntry & {
   order: number;
 };
 
-const COLLECTION = "component_settings";
+const TABLE = "component_settings";
 
+interface SettingsRow {
+  slug: string;
+  name: string | null;
+  description: string | null;
+  hidden: boolean | null;
+  featured: boolean | null;
+  sort_order: number | null;
+}
+
+/** Public read (RLS allows select for the publishable key). */
 export async function getOverrides(): Promise<Record<string, ComponentOverride>> {
   if (!isDatabaseConfigured()) return {};
   try {
-    const { db } = await connectToDatabase();
-    const rows = await db.collection<ComponentOverride>(COLLECTION).find({}, { projection: { _id: 0 } }).toArray();
-    return Object.fromEntries(rows.map((r) => [r.slug, r]));
+    const { data, error } = await publicClient()
+      .from(TABLE)
+      .select("slug,name,description,hidden,featured,sort_order");
+    if (error) throw new Error(error.message);
+    return Object.fromEntries(
+      (data as SettingsRow[]).map((r) => [
+        r.slug,
+        {
+          slug: r.slug,
+          name: r.name ?? undefined,
+          description: r.description ?? undefined,
+          hidden: r.hidden ?? undefined,
+          featured: r.featured ?? undefined,
+          order: r.sort_order ?? undefined,
+        },
+      ])
+    );
   } catch (error) {
     console.error("[component-settings] falling back to defaults:", error instanceof Error ? error.message : error);
     return {};
   }
 }
 
-export async function saveOverride(override: ComponentOverride) {
-  const { db } = await connectToDatabase();
-  const { slug, ...rest } = override;
-  const fields = Object.fromEntries(Object.entries(rest).filter(([, v]) => v !== undefined));
-  await db.collection(COLLECTION).updateOne({ slug }, { $set: { ...fields, slug, updatedAt: new Date() } }, { upsert: true });
+/** Merge the given fields into the slug's override (undefined fields are left as they are). */
+export async function saveOverride({ slug, name, description, hidden, featured, order }: ComponentOverride) {
+  const fields = Object.fromEntries(
+    Object.entries({ name, description, hidden, featured, sort_order: order }).filter(([, v]) => v !== undefined)
+  );
+  const { error } = await adminClient()
+    .from(TABLE)
+    .upsert({ ...fields, slug, updated_at: new Date().toISOString() }, { onConflict: "slug" });
+  if (error) throw new Error(error.message);
 }
 
 export async function resetOverride(slug: string) {
-  const { db } = await connectToDatabase();
-  await db.collection(COLLECTION).deleteOne({ slug });
+  const { error } = await adminClient().from(TABLE).delete().eq("slug", slug);
+  if (error) throw new Error(error.message);
 }
 
 /** Registry merged with admin overrides, sorted. `includeHidden` for admin. */

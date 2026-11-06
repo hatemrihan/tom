@@ -27,7 +27,7 @@ export interface ContactInput {
 
 /** Shape returned to the admin dashboard (ids/dates serialised). */
 export interface ContactRecord {
-  _id: string;
+  id: string;
   name: string;
   email: string;
   phone: string | null;
@@ -81,4 +81,35 @@ export function validateContact(input: Partial<ContactInput>): FieldErrors {
     errors.message = `Keep it under ${LIMITS.message} characters.`;
 
   return errors;
+}
+
+/** A row of the Supabase `contacts` table. */
+export interface ContactRow {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  company_name: string | null;
+  project_type: string | null;
+  message: string | null;
+  status: ContactStatus;
+  source: string;
+  submitted_at: string;
+  updated_at: string | null;
+}
+
+export function toContactRecord(row: ContactRow): ContactRecord {
+  return {
+    id: row.id,
+    name: row.name,
+    email: row.email,
+    phone: row.phone,
+    companyName: row.company_name,
+    projectType: row.project_type,
+    message: row.message,
+    status: row.status,
+    source: row.source,
+    submittedAt: row.submitted_at,
+    updatedAt: row.updated_at ?? undefined,
+  };
 }

@@ -107,9 +107,9 @@ export default function AdminOverviewPage() {
           ) : (
             <ul className="-mx-2 divide-y divide-neutral-100">
               {contacts.slice(0, 5).map((c) => (
-                <li key={c._id}>
+                <li key={c.id}>
                   <Link
-                    href={`/admin/contacts?id=${c._id}`}
+                    href={`/admin/contacts?id=${c.id}`}
                     className="flex items-center gap-3 rounded-lg px-2 py-2.5 transition hover:bg-neutral-50"
                   >
                     <Avatar name={c.name} />

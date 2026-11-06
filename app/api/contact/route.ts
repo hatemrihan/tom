@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { connectToDatabase } from "@/lib/mongodb";
+import { adminClient } from "@/lib/supabase/server";
 import { clientIp, rateLimit } from "@/lib/admin-auth";
 import { validateContact, type ContactInput } from "@/lib/contact";
 
@@ -46,24 +46,24 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const { db } = await connectToDatabase();
-    const result = await db.collection("contacts").insertOne({
-      name: input.name.trim(),
-      email: input.email.toLowerCase().trim(),
-      phone: input.phone?.trim() || null,
-      companyName: input.companyName?.trim() || null,
-      projectType: input.projectType ?? null,
-      message: input.message?.trim() || null,
-      submittedAt: new Date(),
-      status: "unread",
-      source: "contact-stepper",
-      userAgent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
-    });
+    const id = crypto.randomUUID();
+    const { error } = await adminClient()
+      .from("contacts")
+      .insert({
+        id,
+        name: input.name.trim(),
+        email: input.email.toLowerCase().trim(),
+        phone: input.phone?.trim() || null,
+        company_name: input.companyName?.trim() || null,
+        project_type: input.projectType ?? null,
+        message: input.message?.trim() || null,
+        status: "unread",
+        source: "contact-stepper",
+        user_agent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
+      });
+    if (error) throw new Error(error.message);
 
-    return NextResponse.json(
-      { success: true, contactId: result.insertedId.toString() },
-      { status: 201 }
-    );
+    return NextResponse.json({ success: true, contactId: id }, { status: 201 });
   } catch (error) {
     console.error("[contact] submission failed:", error instanceof Error ? error.message : error);
     return NextResponse.json(

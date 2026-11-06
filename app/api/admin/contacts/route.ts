@@ -1,28 +1,42 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ObjectId, type Filter, type Document } from "mongodb";
-import { connectToDatabase } from "@/lib/mongodb";
+import { adminClient } from "@/lib/supabase/server";
 import { isAdminRequest } from "@/lib/admin-auth";
-import { CONTACT_STATUSES, type ContactStatus } from "@/lib/contact";
+import {
+  CONTACT_STATUSES,
+  toContactRecord,
+  type ContactRow,
+  type ContactStatus,
+} from "@/lib/contact";
 
 export const dynamic = "force-dynamic";
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const unauthorized = () =>
   NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
 const serverError = (error: unknown) => {
-  console.error("[admin/contacts]", error instanceof Error ? error.message : error);
-  return NextResponse.json(
-    { error: error instanceof Error ? error.message : "Internal server error" },
-    { status: 500 }
-  );
+  const message = error instanceof Error ? error.message : "Internal server error";
+  console.error("[admin/contacts]", message);
+  return NextResponse.json({ error: message }, { status: 500 });
 };
 
-function toObjectId(id: unknown): ObjectId | null {
-  return typeof id === "string" && ObjectId.isValid(id) ? new ObjectId(id) : null;
+const isStatus = (value: unknown): value is ContactStatus =>
+  typeof value === "string" && (CONTACT_STATUSES as readonly string[]).includes(value);
+
+function parseIds(value: unknown): string[] {
+  const list = Array.isArray(value) ? value : [value];
+  return list.filter((id): id is string => typeof id === "string" && UUID_RE.test(id)).slice(0, 500);
 }
 
-function escapeRegex(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+/** Make a search term safe inside a PostgREST `or=(…ilike…)` filter. */
+function toIlikePattern(q: string) {
+  const cleaned = q
+    .slice(0, 100)
+    .replace(/[,()"\\]/g, " ")
+    .replace(/[%_]/g, (m) => `\\${m}`)
+    .trim();
+  return cleaned ? `%${cleaned}%` : null;
 }
 
 /** GET — list contacts + dashboard stats. */
@@ -30,75 +44,71 @@ export async function GET(request: NextRequest) {
   if (!isAdminRequest(request)) return unauthorized();
 
   try {
-    const { db } = await connectToDatabase();
-    const contacts = db.collection("contacts");
+    const db = adminClient();
     const params = request.nextUrl.searchParams;
-
     const limit = Math.min(Math.max(Number(params.get("limit")) || 200, 1), 500);
     const status = params.get("status");
-    const q = params.get("q")?.trim();
+    const pattern = toIlikePattern(params.get("q") ?? "");
 
-    const filter: Filter<Document> = {};
-    if (status && (CONTACT_STATUSES as readonly string[]).includes(status)) {
-      filter.status = status;
+    let list = db
+      .from("contacts")
+      .select("id,name,email,phone,company_name,project_type,message,status,source,submitted_at,updated_at")
+      .order("submitted_at", { ascending: false })
+      .limit(limit);
+    if (isStatus(status)) list = list.eq("status", status);
+    if (pattern) {
+      list = list.or(
+        ["name", "email", "company_name", "message"].map((col) => `${col}.ilike.${pattern}`).join(",")
+      );
     }
-    if (q) {
-      const re = new RegExp(escapeRegex(q.slice(0, 100)), "i");
-      filter.$or = [{ name: re }, { email: re }, { companyName: re }, { message: re }];
-    }
+
+    // Stats are computed from a light projection of every row — plenty for a
+    // portfolio inbox. Swap for a Postgres view/RPC if this ever grows large.
+    const [listRes, statsRes] = await Promise.all([
+      list,
+      db.from("contacts").select("status,project_type,submitted_at").limit(10_000),
+    ]);
+    if (listRes.error) throw new Error(listRes.error.message);
+    if (statsRes.error) throw new Error(statsRes.error.message);
+
+    const rows = statsRes.data as Pick<ContactRow, "status" | "project_type" | "submitted_at">[];
 
     const since = new Date();
     since.setUTCHours(0, 0, 0, 0);
     since.setUTCDate(since.getUTCDate() - 29);
 
-    const [items, total, byStatus, byType, daily] = await Promise.all([
-      contacts.find(filter).sort({ submittedAt: -1 }).limit(limit).toArray(),
-      contacts.countDocuments({}),
-      contacts.aggregate([{ $group: { _id: "$status", count: { $sum: 1 } } }]).toArray(),
-      contacts
-        .aggregate([{ $group: { _id: "$projectType", count: { $sum: 1 } } }, { $sort: { count: -1 } }])
-        .toArray(),
-      contacts
-        .aggregate([
-          { $match: { submittedAt: { $gte: since } } },
-          {
-            $group: {
-              _id: { $dateToString: { format: "%Y-%m-%d", date: "$submittedAt" } },
-              count: { $sum: 1 },
-            },
-          },
-        ])
-        .toArray(),
-    ]);
+    const statusCounts = Object.fromEntries(CONTACT_STATUSES.map((s) => [s, 0])) as Record<ContactStatus, number>;
+    const typeCounts = new Map<string, number>();
+    const dailyCounts = new Map<string, number>();
+
+    for (const row of rows) {
+      const s = isStatus(row.status) ? row.status : "unread";
+      statusCounts[s] += 1;
+      const type = row.project_type ?? "unknown";
+      typeCounts.set(type, (typeCounts.get(type) ?? 0) + 1);
+      const day = new Date(row.submitted_at);
+      if (day >= since) {
+        const key = day.toISOString().slice(0, 10);
+        dailyCounts.set(key, (dailyCounts.get(key) ?? 0) + 1);
+      }
+    }
 
     // Fill every one of the last 30 days, even empty ones, for the chart.
-    const dailyMap = new Map(daily.map((d) => [d._id as string, d.count as number]));
     const timeline = Array.from({ length: 30 }, (_, i) => {
       const d = new Date(since);
       d.setUTCDate(since.getUTCDate() + i);
       const key = d.toISOString().slice(0, 10);
-      return { date: key, count: dailyMap.get(key) ?? 0 };
+      return { date: key, count: dailyCounts.get(key) ?? 0 };
     });
 
-    const statusCounts = Object.fromEntries(
-      CONTACT_STATUSES.map((s) => [s, 0])
-    ) as Record<ContactStatus, number>;
-    for (const row of byStatus) {
-      const key = (row._id ?? "unread") as ContactStatus;
-      if (key in statusCounts) statusCounts[key] += row.count as number;
-    }
-
     return NextResponse.json({
-      contacts: items.map((c) => ({
-        ...c,
-        _id: c._id.toString(),
-        submittedAt: c.submittedAt instanceof Date ? c.submittedAt.toISOString() : c.submittedAt,
-        updatedAt: c.updatedAt instanceof Date ? c.updatedAt.toISOString() : c.updatedAt,
-      })),
+      contacts: (listRes.data as ContactRow[]).map(toContactRecord),
       stats: {
-        total,
+        total: rows.length,
         status: statusCounts,
-        projectTypes: byType.map((t) => ({ type: (t._id as string) ?? "unknown", count: t.count as number })),
+        projectTypes: [...typeCounts.entries()]
+          .map(([type, count]) => ({ type, count }))
+          .sort((a, b) => b.count - a.count),
         timeline,
       },
     });
@@ -112,28 +122,23 @@ export async function PATCH(request: NextRequest) {
   if (!isAdminRequest(request)) return unauthorized();
 
   try {
-    const body = (await request.json()) as {
-      contactId?: unknown;
-      ids?: unknown;
-      status?: unknown;
-    };
-    const rawIds = Array.isArray(body.ids) ? body.ids : [body.contactId];
-    const ids = rawIds.map(toObjectId).filter((id): id is ObjectId => id !== null);
-    const status = body.status;
-
-    if (ids.length === 0 || typeof status !== "string" || !(CONTACT_STATUSES as readonly string[]).includes(status)) {
+    const body = (await request.json()) as { contactId?: unknown; ids?: unknown; status?: unknown };
+    const ids = parseIds(Array.isArray(body.ids) ? body.ids : body.contactId);
+    if (ids.length === 0 || !isStatus(body.status)) {
       return NextResponse.json({ error: "Provide valid id(s) and status" }, { status: 400 });
     }
 
-    const { db } = await connectToDatabase();
-    const result = await db
-      .collection("contacts")
-      .updateMany({ _id: { $in: ids } }, { $set: { status, updatedAt: new Date() } });
+    const { data, error } = await adminClient()
+      .from("contacts")
+      .update({ status: body.status, updated_at: new Date().toISOString() })
+      .in("id", ids)
+      .select("id");
+    if (error) throw new Error(error.message);
 
-    if (result.matchedCount === 0) {
+    if (!data || data.length === 0) {
       return NextResponse.json({ error: "Contact not found" }, { status: 404 });
     }
-    return NextResponse.json({ success: true, updated: result.modifiedCount });
+    return NextResponse.json({ success: true, updated: data.length });
   } catch (error) {
     return serverError(error);
   }
@@ -145,16 +150,14 @@ export async function DELETE(request: NextRequest) {
 
   try {
     const body = (await request.json()) as { ids?: unknown };
-    const ids = (Array.isArray(body.ids) ? body.ids : [])
-      .map(toObjectId)
-      .filter((id): id is ObjectId => id !== null);
+    const ids = parseIds(Array.isArray(body.ids) ? body.ids : []);
     if (ids.length === 0) {
       return NextResponse.json({ error: "Provide id(s) to delete" }, { status: 400 });
     }
 
-    const { db } = await connectToDatabase();
-    const result = await db.collection("contacts").deleteMany({ _id: { $in: ids } });
-    return NextResponse.json({ success: true, deleted: result.deletedCount });
+    const { data, error } = await adminClient().from("contacts").delete().in("id", ids).select("id");
+    if (error) throw new Error(error.message);
+    return NextResponse.json({ success: true, deleted: data?.length ?? 0 });
   } catch (error) {
     return serverError(error);
   }

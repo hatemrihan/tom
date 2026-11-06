@@ -8,8 +8,9 @@ export function DatabaseNotice({ message }: { message: string }) {
         <p className="font-medium">Couldn&apos;t load data</p>
         <p className="mt-0.5 text-amber-800/80">{message}</p>
         <p className="mt-2 text-xs text-amber-800/70">
-          Check that <code className="rounded bg-amber-100 px-1">MONGODB_URI</code> and{" "}
-          <code className="rounded bg-amber-100 px-1">MONGODB_DB</code> are set in your environment.
+          Check that <code className="rounded bg-amber-100 px-1">NEXT_PUBLIC_SUPABASE_URL</code> and{" "}
+          <code className="rounded bg-amber-100 px-1">SUPABASE_SECRET_KEY</code> are set, and that{" "}
+          <code className="rounded bg-amber-100 px-1">supabase/migrations</code> has been run.
         </p>
       </div>
     </div>

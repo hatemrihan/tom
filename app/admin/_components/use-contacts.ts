@@ -60,7 +60,7 @@ export function useContacts(query: Query = {}) {
     async (ids: string[], next: ContactStatus) => {
       // Optimistic update — feels instant, rolls back on failure.
       const previous = contacts;
-      setContacts((list) => list.map((c) => (ids.includes(c._id) ? { ...c, status: next } : c)));
+      setContacts((list) => list.map((c) => (ids.includes(c.id) ? { ...c, status: next } : c)));
       const res = await fetch("/api/admin/contacts", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -79,7 +79,7 @@ export function useContacts(query: Query = {}) {
   const remove = useCallback(
     async (ids: string[]) => {
       const previous = contacts;
-      setContacts((list) => list.filter((c) => !ids.includes(c._id)));
+      setContacts((list) => list.filter((c) => !ids.includes(c.id)));
       const res = await fetch("/api/admin/contacts", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },

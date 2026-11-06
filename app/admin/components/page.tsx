@@ -91,7 +91,7 @@ export default function AdminComponentsPage() {
         }
       />
 
-      {!dbReady && <DatabaseNotice message="Edits are stored in MongoDB. Connect a database to customise components — until then, the defaults from registry.ts are used." />}
+      {!dbReady && <DatabaseNotice message="Edits are stored in Supabase. Connect a database to customise components — until then, the defaults from registry.ts are used." />}
       {error && dbReady && <DatabaseNotice message={error} />}
 
       <label className="relative mb-4 block max-w-xs">

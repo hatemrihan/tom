@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { getOverrides, getResolvedRegistry, isKnownSlug, resetOverride, saveOverride } from "@/lib/component-settings";
-import { isDatabaseConfigured } from "@/lib/mongodb";
+import { isAdminDatabaseConfigured } from "@/lib/supabase/server";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   if (!isAdminRequest(request)) return unauthorized();
   const [entries, overrides] = await Promise.all([getResolvedRegistry({ includeHidden: true }), getOverrides()]);
   return NextResponse.json({
-    databaseConfigured: isDatabaseConfigured(),
+    databaseConfigured: isAdminDatabaseConfigured(),
     components: entries.map((e) => ({
       slug: e.slug,
       name: e.name,

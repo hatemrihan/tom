@@ -41,7 +41,7 @@ function Inbox() {
   const { contacts, stats, loading, error, updateStatus, remove } = useContacts({ status: filter, q: query });
 
   const activeId = params.get("id");
-  const active = useMemo(() => contacts.find((c) => c._id === activeId) ?? null, [contacts, activeId]);
+  const active = useMemo(() => contacts.find((c) => c.id === activeId) ?? null, [contacts, activeId]);
 
   const open = (id: string | null) => {
     const next = new URLSearchParams(params);
@@ -53,22 +53,22 @@ function Inbox() {
   // Opening an unread message marks it as read.
   useEffect(() => {
     if (active && active.status === "unread") {
-      updateStatus([active._id], "read").catch(() => {});
+      updateStatus([active.id], "read").catch(() => {});
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active?._id]);
+  }, [active?.id]);
 
   // j / k to move through the list, Escape to close.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement || e.target instanceof HTMLSelectElement) return;
-      const idx = contacts.findIndex((c) => c._id === activeId);
+      const idx = contacts.findIndex((c) => c.id === activeId);
       if (e.key === "j" || e.key === "ArrowDown") {
         const next = contacts[Math.min(idx + 1, contacts.length - 1)];
-        if (next) open(next._id);
+        if (next) open(next.id);
       } else if (e.key === "k" || e.key === "ArrowUp") {
         const prev = contacts[Math.max(idx - 1, 0)];
-        if (prev) open(prev._id);
+        if (prev) open(prev.id);
       } else if (e.key === "Escape") {
         open(null);
       }
@@ -100,7 +100,7 @@ function Inbox() {
       return next;
     });
 
-  const allSelected = contacts.length > 0 && contacts.every((c) => selected.has(c._id));
+  const allSelected = contacts.length > 0 && contacts.every((c) => selected.has(c.id));
   const ids = [...selected];
 
   const tabs: { key: Filter; label: string; count?: number }[] = [
@@ -173,7 +173,7 @@ function Inbox() {
           <div className="flex h-10 items-center gap-3 rounded-t-xl border border-b-0 border-neutral-200 bg-neutral-50/60 px-3 text-xs text-neutral-500">
             <Checkbox
               checked={allSelected}
-              onChange={() => setSelected(allSelected ? new Set() : new Set(contacts.map((c) => c._id)))}
+              onChange={() => setSelected(allSelected ? new Set() : new Set(contacts.map((c) => c.id)))}
               label="Select all"
             />
             {selected.size > 0 ? (
@@ -217,15 +217,15 @@ function Inbox() {
                 )}
             {contacts.map((c) => (
               <li
-                key={c._id}
+                key={c.id}
                 className={cn(
                   "group flex cursor-pointer items-start gap-3 px-3 py-3 transition-colors",
-                  c._id === activeId ? "bg-neutral-100" : "hover:bg-neutral-50"
+                  c.id === activeId ? "bg-neutral-100" : "hover:bg-neutral-50"
                 )}
-                onClick={() => open(c._id)}
+                onClick={() => open(c.id)}
               >
                 <div className="pt-2" onClick={(e) => e.stopPropagation()}>
-                  <Checkbox checked={selected.has(c._id)} onChange={() => toggle(c._id)} label={`Select ${c.name}`} />
+                  <Checkbox checked={selected.has(c.id)} onChange={() => toggle(c.id)} label={`Select ${c.name}`} />
                 </div>
                 <Avatar name={c.name} />
                 <div className="min-w-0 flex-1">
@@ -254,10 +254,10 @@ function Inbox() {
             <Detail
               contact={active}
               onBack={() => open(null)}
-              onStatus={(s) => run(() => updateStatus([active._id], s), `Marked as ${STATUS_STYLES[s].label.toLowerCase()}`)}
+              onStatus={(s) => run(() => updateStatus([active.id], s), `Marked as ${STATUS_STYLES[s].label.toLowerCase()}`)}
               onDelete={() =>
                 run(async () => {
-                  await remove([active._id]);
+                  await remove([active.id]);
                   open(null);
                 }, "Deleted")
               }

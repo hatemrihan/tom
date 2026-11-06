@@ -42,14 +42,17 @@ Then copy a component (for example [`hold-to-confirm.tsx`](components/library/ho
 ## Development
 
 ```bash
-cp .env.example .env.local   # fill in MongoDB + admin key
+cp .env.example .env.local   # fill in Supabase + admin key
 npm install
 npm run dev
 ```
 
+Create the tables once: paste [`supabase/migrations/20261106000000_init.sql`](supabase/migrations/20261106000000_init.sql) into the Supabase SQL editor and run it (or `supabase db push`). Row Level Security is on: the publishable key can only read component settings, and contacts are reachable only from the server with the secret key.
+
 | Variable | Purpose |
 | --- | --- |
-| `MONGODB_URI`, `MONGODB_DB` | contact submissions + component settings |
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase project (public reads) |
+| `SUPABASE_SECRET_KEY` | server-only key for contact submissions and admin data |
 | `ADMIN_SECRET_KEY` | sign-in key for `/admin` (signed, httpOnly session cookie) |
 | `GOOGLE_SITE_VERIFICATION` | optional Search Console token |
 
