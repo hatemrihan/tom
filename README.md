@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# TOM — portfolio & open-source components
 
-## Getting Started
+The portfolio of **Hatem Rihan** ([tomm.one](https://tomm.one)) and **TOM Components**, a free library of 85+ motion-rich React components.
 
-First, run the development server:
+- **Portfolio**: scroll-driven hero, project showcase, contact stepper, client agreement.
+- **Components** (`/components`): every component has a live preview, its full source and copy-paste install steps.
+- **Admin** (`/admin`): contact inbox with charts, plus a manager to rename, describe, hide or feature components.
+
+## Components
+
+Each component is **one self-contained file** in [`components/library`](components/library). It depends only on React, [Motion](https://motion.dev), Tailwind CSS and a tiny `cn` helper.
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm i motion clsx tailwind-merge
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```ts
+// lib/utils.ts
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Then copy a component (for example [`hold-to-confirm.tsx`](components/library/hold-to-confirm/hold-to-confirm.tsx)) into your project. Every docs page shows the exact file paths.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Folder | What's inside |
+| --- | --- |
+| `components/library/<name>/` | the component |
+| `components/library/demos/` | usage examples (also shown as the "Usage" tab) |
+| `components/library/registry.ts` | names, descriptions, categories, credits |
+| `components/library/_lib/` | shared `cn` and noise helpers |
 
-## Learn More
+### Adding a component
 
-To learn more about Next.js, take a look at the following resources:
+1. Create `components/library/<slug>/<slug>.tsx`.
+2. Add a demo at `components/library/demos/<slug>.tsx` (default export).
+3. Register it in `registry.ts`.
+4. Run `node scripts/gen-previews.mjs`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Development
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+cp .env.example .env.local   # fill in MongoDB + admin key
+npm install
+npm run dev
+```
 
-## Deploy on Vercel
+| Variable | Purpose |
+| --- | --- |
+| `MONGODB_URI`, `MONGODB_DB` | contact submissions + component settings |
+| `ADMIN_SECRET_KEY` | sign-in key for `/admin` (signed, httpOnly session cookie) |
+| `GOOGLE_SITE_VERIFICATION` | optional Search Console token |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The site builds and runs without a database. Forms and admin data show a clear notice until one is connected.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Credits
+
+Several components were inspired by interaction ideas shared by [dqnamo](https://www.dqnamo.com), [React Drops](https://reactdrops.dev) and [Skiper UI](https://skiper-ui.com). Each docs page links the original idea. All code in this repository is an original implementation.
+
+## License
+
+[MIT](LICENSE) © Hatem Rihan

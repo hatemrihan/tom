@@ -5,8 +5,9 @@ import Footer from "./sections/Footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "TOM - Software Engineer Portfolio",
-  description: "TOM is a Software Engineer specializing in full-stack development, robust system architectures, and scalable applications.",
+  title: { absolute: "TOM — Hatem Rihan, Software Engineer" },
+  description:
+    "Hatem Rihan (TOM) — software engineer building full-stack products, scalable systems and open-source React components.",
   alternates: {
     canonical: "/",
   },
