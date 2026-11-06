@@ -15,7 +15,6 @@ interface TypingAnimationProps extends MotionProps {
   delay?: number
   pauseDelay?: number
   loop?: boolean
-  as?: React.ElementType
   startOnView?: boolean
   showCursor?: boolean
   blinkCursor?: boolean
@@ -32,16 +31,12 @@ export function TypingAnimation({
   delay = 0,
   pauseDelay = 1000,
   loop = false,
-  as: Component = "span",
   startOnView = true,
   showCursor = true,
   blinkCursor = true,
   cursorStyle = "line",
   ...props
 }: TypingAnimationProps) {
-  const MotionComponent = motion.create(Component, {
-    forwardMotionProps: true,
-  })
 
   const [displayedText, setDisplayedText] = useState<string>("")
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
@@ -155,7 +150,7 @@ export function TypingAnimation({
   }
 
   return (
-    <MotionComponent
+    <motion.span
       ref={elementRef}
       className={cn("leading-[5rem] tracking-[-0.02em]", className)}
       {...props}
@@ -168,6 +163,6 @@ export function TypingAnimation({
           {getCursorChar()}
         </span>
       )}
-    </MotionComponent>
+    </motion.span>
   )
 }

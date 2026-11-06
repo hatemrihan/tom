@@ -57,7 +57,7 @@ const Footer = () => {
             </h3>
             <div className="flex flex-wrap gap-3 text-sm font-normal">
               <a
-                href="https://instagram.com/hatemrihann"
+                href="https://www.instagram.com/hatemrihann"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans-light text-black hover:underline transition-all"
@@ -66,7 +66,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-400">—</span>
               <a
-                href="https://twitter.com/hatemrihan"
+                href="https://x.com/hatemrihan"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans-light text-black hover:underline transition-all"
@@ -75,7 +75,7 @@ const Footer = () => {
               </a>
               <span className="text-gray-400">—</span>
               <a
-                href="https://linkedin.com/in/hatemrihan"
+                href="https://www.linkedin.com/in/hatem-rihan-298753309"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-open-sans-light text-black hover:underline transition-all"

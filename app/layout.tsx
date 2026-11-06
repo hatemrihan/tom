@@ -1,75 +1,74 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Open_Sans, Special_Gothic_Expanded_One } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const openSans = Open_Sans({
+  variable: "--font-open-sans",
   subsets: ["latin"],
+  weight: ["300", "400", "800"],
+  display: "swap",
+});
+const display = Special_Gothic_Expanded_One({
+  variable: "--font-special-gothic",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const SITE_URL = "https://tomm.one";
+const SOCIAL = {
+  x: "https://x.com/hatemrihan",
+  instagram: "https://www.instagram.com/hatemrihann",
+  linkedin: "https://www.linkedin.com/in/hatem-rihan-298753309",
+};
 
 export const metadata: Metadata = {
-  // Basic metadata
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: "TOM - Software Engineer Portfolio",
-    template: "%s | TOM Portfolio"
+    default: "TOM — Hatem Rihan, Software Engineer",
+    template: "%s | TOM",
   },
-  description: "TOM is a Software Engineer specializing in full-stack development, robust system architectures, and scalable applications. Explore my portfolio of projects and get in touch for collaborations.",
-  keywords: ["TOM", "portfolio", "software engineer", "full-stack developer", "backend developer", "frontend developer", "Hatem", "web development"],
-  authors: [{ name: "TOM", url: "https://tomm.one" }],
-  creator: "TOM",
-  publisher: "TOM",
-  
-  // Open Graph metadata (for social media sharing)
+  description:
+    "TOM (Hatem Rihan) is a software engineer and design engineer building full-stack products, scalable systems and open-source React components.",
+  keywords: [
+    "TOM",
+    "Hatem Rihan",
+    "portfolio",
+    "software engineer",
+    "design engineer",
+    "full-stack developer",
+    "React components",
+    "open source",
+    "Next.js",
+    "Tailwind CSS",
+  ],
+  authors: [{ name: "Hatem Rihan", url: SITE_URL }],
+  creator: "Hatem Rihan",
+  publisher: "Hatem Rihan",
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://tomm.one",
-    siteName: "TOM Portfolio",
-    title: "TOM - Software Engineer Portfolio",
-    description: "Explore TOM's portfolio of software engineering projects. Specializing in full-stack development and scalable applications.",
-    images: [
-      {
-        url: "/logo.svg",
-        width: 1200,
-        height: 630,
-        alt: "TOM Portfolio Logo",
-      }
-    ],
+    url: SITE_URL,
+    siteName: "TOM",
+    title: "TOM — Hatem Rihan, Software Engineer",
+    description:
+      "Full-stack products, scalable systems and open-source React components by Hatem Rihan.",
+    images: [{ url: "/logo.svg", alt: "TOM" }],
   },
-  
-  // Twitter Card metadata
   twitter: {
     card: "summary_large_image",
-    title: "TOM - Software Engineer Portfolio",
-    description: "Explore TOM's software engineering portfolio.",
+    title: "TOM — Hatem Rihan, Software Engineer",
+    description: "Full-stack products and open-source React components.",
     images: ["/logo.svg"],
-    creator: "@yourtwitter", // Add your Twitter handle
+    creator: "@hatemrihan",
   },
-  
-  // Icons and manifest
   icons: {
-    icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon.ico", sizes: "any" }
-    ],
+    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
     shortcut: "/favicon.svg",
-    apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
-  
-  // Verification for search engines
-  verification: {
-    google: "your-google-verification-code", // Add after domain setup
-    // yandex: "your-yandex-verification-code",
-    // bing: "your-bing-verification-code",
-  },
-  
-  // Robots
   robots: {
     index: true,
     follow: true,
@@ -81,46 +80,49 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  
-  // Additional metadata
-  metadataBase: new URL("https://tomm.one"),
+  ...(process.env.GOOGLE_SITE_VERIFICATION && {
+    verification: { google: process.env.GOOGLE_SITE_VERIFICATION },
+  }),
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  // Structured data for rich snippets in search results
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Person",
-    name: "TOM (Hatem)",
-    url: "https://tomm.one",
-    jobTitle: "Software Engineer",
-    description: "Software Engineer specializing in full-stack development, robust system architectures, and scalable applications.",
-    image: "https://tomm.one/logo.svg",
-    sameAs: [
-      "https://twitter.com/yourtwitter",
-      "https://linkedin.com/in/yourlinkedin",
-      "https://github.com/yourgithub",
-      // Add your social media links
-    ],
-    knowsAbout: ["Software Engineering", "Full-Stack Development", "Backend Architecture", "Web Automation", "System Design"],
-  };
+export const viewport: Viewport = {
+  themeColor: "#f2f2f2",
+  width: "device-width",
+  initialScale: 1,
+};
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Hatem Rihan",
+  alternateName: "TOM",
+  url: SITE_URL,
+  jobTitle: "Software Engineer",
+  description:
+    "Software engineer specializing in full-stack development, system architecture and interactive UI.",
+  image: `${SITE_URL}/logo.svg`,
+  sameAs: Object.values(SOCIAL),
+  knowsAbout: [
+    "Software Engineering",
+    "Full-Stack Development",
+    "React",
+    "Next.js",
+    "TypeScript",
+    "Python",
+    "System Design",
+  ],
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
-      <head>
-        {/* Structured Data for SEO */}
+    <html lang="en" suppressHydrationWarning>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} ${display.variable} antialiased overflow-x-hidden`}
+      >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-      </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
-      >
         {children}
       </body>
     </html>

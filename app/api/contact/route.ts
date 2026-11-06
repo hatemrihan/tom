@@ -1,79 +1,74 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '../../../lib/mongodb';
+import { NextRequest, NextResponse } from "next/server";
+import { connectToDatabase } from "@/lib/mongodb";
+import { clientIp, rateLimit } from "@/lib/admin-auth";
+import { validateContact, type ContactInput } from "@/lib/contact";
+
+export const dynamic = "force-dynamic";
+
+const str = (value: unknown) => (typeof value === "string" ? value : undefined);
 
 export async function POST(request: NextRequest) {
-  try {
-    // Parse the request body
-    const body = await request.json();
-    const { name, email, phone, message, companyName, projectType } = body;
-
-    // Validate required fields
-    if (!name || !email) {
-      return NextResponse.json(
-        { error: 'Missing required fields: name and email are required' },
-        { status: 400 }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
-
-    // Connect to MongoDB
-    const { db } = await connectToDatabase();
-
-    // Create the contact document
-    const contactData = {
-      name: name.trim(),
-      email: email.toLowerCase().trim(),
-      phone: phone?.trim() || null,
-      companyName: companyName?.trim() || null,
-      projectType: projectType?.trim() || null,
-     
-      message: message?.trim() || null,
-      submittedAt: new Date(),
-      status: 'unread',
-      source: 'stepper-contact-form'
-    };
-
-    // Insert into the contacts collection
-    const result = await db.collection('contacts').insertOne(contactData);
-
-    if (result.acknowledged) {
-      return NextResponse.json(
-        { 
-          success: true, 
-          message: 'Contact form submitted successfully',
-          contactId: result.insertedId
-        },
-        { status: 201 }
-      );
-    } else {
-      throw new Error('Failed to insert contact data');
-    }
-
-  } catch (error) {
-    console.error('Contact form submission error:', error);
-    
+  const limit = rateLimit(`contact:${clientIp(request)}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
     return NextResponse.json(
-      { 
-        error: 'Internal server error. Please try again later.',
-        details: process.env.NODE_ENV === 'development' ? error : undefined
-      },
+      { error: "You've sent a few messages already — please try again in a bit." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
+  let body: Record<string, unknown>;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
+
+  // Honeypot: real visitors never fill the hidden "website" field.
+  if (str(body.website)) {
+    return NextResponse.json({ success: true }, { status: 201 });
+  }
+
+  const input: ContactInput = {
+    name: str(body.name) ?? "",
+    email: str(body.email) ?? "",
+    phone: str(body.phone),
+    companyName: str(body.companyName),
+    projectType: str(body.projectType),
+    message: str(body.message),
+  };
+
+  const errors = validateContact(input);
+  if (Object.keys(errors).length > 0) {
+    return NextResponse.json(
+      { error: Object.values(errors)[0], fields: errors },
+      { status: 400 }
+    );
+  }
+
+  try {
+    const { db } = await connectToDatabase();
+    const result = await db.collection("contacts").insertOne({
+      name: input.name.trim(),
+      email: input.email.toLowerCase().trim(),
+      phone: input.phone?.trim() || null,
+      companyName: input.companyName?.trim() || null,
+      projectType: input.projectType ?? null,
+      message: input.message?.trim() || null,
+      submittedAt: new Date(),
+      status: "unread",
+      source: "contact-stepper",
+      userAgent: request.headers.get("user-agent")?.slice(0, 300) ?? null,
+    });
+
+    return NextResponse.json(
+      { success: true, contactId: result.insertedId.toString() },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("[contact] submission failed:", error instanceof Error ? error.message : error);
+    return NextResponse.json(
+      { error: "Something went wrong on my side. Please email me directly." },
       { status: 500 }
     );
   }
 }
-
-// Handle GET requests (optional - for testing)
-export async function GET() {
-  return NextResponse.json(
-    { message: 'Contact API endpoint is working. Use POST to submit contact forms.' },
-    { status: 200 }
-  );
-} 

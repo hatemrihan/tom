@@ -1,196 +1,111 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-// This imports React hooks to manage state
-import { useState } from 'react';
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
-// Navigation component with smooth menu overlay
+const MENU = [
+  { href: "/", label: "Home" },
+  { href: "/components", label: "Components" },
+  { href: "/contact", label: "Contact" },
+];
+
+const SOCIAL = [
+  { href: "https://x.com/hatemrihan", label: "𝕏", name: "X (Twitter)" },
+  { href: "https://www.instagram.com/hatemrihann", label: "IG", name: "Instagram" },
+  { href: "https://www.linkedin.com/in/hatem-rihan-298753309", label: "in", name: "LinkedIn" },
+];
+
 const Nav = () => {
-  // This tracks if the menu is open or closed
   const [isOpen, setIsOpen] = useState(false);
 
-  // This function toggles the menu open/closed
-  const toggleMenu = () => {
-    setIsOpen(!isOpen);
-  };
+  // Lock page scroll and allow Escape to close while the menu is open.
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setIsOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = previous;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [isOpen]);
 
   return (
     <>
-      {/* Fixed navigation bar at top - Logo and top links ONLY */}
-      <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-6 md:px-12 md:py-8 flex items-center justify-between bg-[#f2f2f2]">
-        {/* Logo on the left */}
-        <Link href='/'>
-          <div className="text-xl md:text-2xl font-medium tracking-tight text-black ">
-            TOM
-          </div>
+      <nav className="fixed left-0 right-0 top-0 z-50 flex items-center justify-between bg-[#f2f2f2] px-6 py-6 md:px-12 md:py-8">
+        <Link href="/" className="text-xl font-medium tracking-tight text-black md:text-2xl">
+          TOM
         </Link>
-
-        {/* Top navigation links - CONTACT on mobile, all links on desktop */}
-        <div className="flex items-center gap-6 text-sm uppercase tracking-wide ">
-          {/* <a href="#manifesto" className="hidden md:flex hover:text-gray-600 transition-colors items-center gap-1">
-            MANIFESTO <span className="text-xs">↗</span>
-          </a>
-          <a href="#webflow" className="hidden md:flex hover:text-gray-600 transition-colors items-center gap-1">
-            WEBFLOW  <span className="text-xs">↗</span>
-          </a> */}
-          <a href="/contact" className="hover:text-gray-600 transition-colors flex items-center gap-1">
-            CONTACT <span>→</span>
-          </a>
+        <div className="flex items-center gap-6 text-sm uppercase tracking-wide">
+          <Link href="/components" className="hidden items-center gap-1 transition-colors hover:text-gray-600 sm:flex">
+            Components <span aria-hidden>↗</span>
+          </Link>
+          <Link href="/contact" className="flex items-center gap-1 transition-colors hover:text-gray-600">
+            Contact <span aria-hidden>→</span>
+          </Link>
         </div>
       </nav>
 
-      {/* Hamburger menu button - FIXED AT BOTTOM RIGHT */}
+      {/* Menu toggle — bottom right */}
       <button
-        onClick={toggleMenu}
-        className="fixed bottom-8 right-8 md:bottom-12 md:right-12 z-50 w-14 h-14 md:w-16 md:h-16 flex items-center justify-center focus:outline-none   hover:border-black transition-colors duration-300 group cursor-pointer"
-        aria-label="Toggle menu"
+        onClick={() => setIsOpen((o) => !o)}
+        aria-label={isOpen ? "Close menu" : "Open menu"}
+        aria-expanded={isOpen}
+        aria-controls="site-menu"
+        className="group fixed bottom-8 right-8 z-50 flex h-14 w-14 cursor-pointer items-center justify-center rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-black/40 md:bottom-12 md:right-12 md:h-16 md:w-16"
       >
-        {/* Top line of hamburger */}
         <span
-          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out ${isOpen ? 'rotate-45 translate-y-0' : '-translate-y-2 cursor-pointer'
-            }`}
+          className={`absolute h-0.5 w-7 bg-black transition-all duration-300 ease-in-out ${isOpen ? "translate-y-0 rotate-45" : "-translate-y-2"}`}
         />
-        {/* Bottom line of hamburger */}
         <span
-          className={`absolute w-7 h-0.5 bg-black group-hover:bg-black transition-all duration-300 ease-in-out cursor-pointer ${isOpen ? '-rotate-45 translate-y-0' : 'translate-y-2 cursor-pointer'
-            }`}
+          className={`absolute h-0.5 w-7 bg-black transition-all duration-300 ease-in-out ${isOpen ? "translate-y-0 -rotate-45" : "translate-y-2"}`}
         />
       </button>
 
-      {/* Full-screen menu overlay */}
+      {/* Full-screen menu */}
       <div
-        className={`fixed inset-0 bg-[#f2f2f2] z-40 transition-all duration-700 cursor-pointer ease-in-out ${isOpen ? 'opacity-100 visible' : 'opacity-0 invisible cursor-pointer'
-          }`}
+        id="site-menu"
+        aria-hidden={!isOpen}
+        className={`fixed inset-0 z-40 bg-[#f2f2f2] transition-all duration-700 ease-in-out ${isOpen ? "visible opacity-100" : "invisible opacity-0"}`}
       >
-        {/* Menu content container - RIGHT side aligned */}
-        <div className="flex flex-col justify-between h-full py-24 pr-12 md:pr-24 lg:pr-32">
-          {/* Main menu items - Right aligned */}
-          <ul className="space-y-3 md:space-y-4 text-right">
-            {/* HOME */}
-            <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '100ms' }}
-            >
-              <a
-                href="/"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
+        <div className="flex h-full flex-col justify-between py-24 pr-12 md:pr-24 lg:pr-32">
+          <ul className="space-y-3 text-right md:space-y-4">
+            {MENU.map((item, i) => (
+              <li
+                key={item.href}
+                className={`transition-all duration-700 ease-out ${isOpen ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0"}`}
+                style={{ transitionDelay: `${100 + i * 100}ms` }}
               >
-                HOME
-                <span className="text-lg">→</span>
-              </a>
-            </li>
-
-            {/* ABOUT US */}
-            {/* <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '150ms' }}
-            >
-              <a
-                href="/about"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
-              >
-                ABOUT US
-                <span className="text-lg">→</span>
-              </a>
-            </li> */}
-
-            {/* WORK */}
-            {/* <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '200ms' }}
-            >
-              <a
-                href="#work"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
-              >
-                WORK
-                <span className="text-lg">→</span>
-              </a>
-            </li> */}
-
-            {/* SERVICES */}
-
-
-            {/* CONTACT */}
-            <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '300ms' }}
-            >
-              <a
-                href="/contact"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
-              >
-                CONTACT
-                <span className="text-lg">→</span>
-              </a>
-            </li>
-
-            {/* W. ENTERPRISE */}
-            {/* <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '350ms' }}
-            >
-              <a
-                href="#webflow"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
-              >
-                W. WEBFLOW
-                <span className="text-lg">↗</span>
-              </a>
-            </li> */}
-
-            {/* MANIFESTO */}
-            {/* <li
-              className={`transition-all duration-700 ease-out ${isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
-                }`}
-              style={{ transitionDelay: '400ms' }}
-            >
-              <a
-                href="#manifesto"
-                className="text-xl md:text-2xl lg:text-3xl font-normal uppercase tracking-tight hover:text-gray-600 transition-colors duration-300 inline-flex items-center gap-4"
-                onClick={toggleMenu}
-              >
-                MANIFESTO
-                <span className="text-lg">↗</span>
-              </a>
-            </li> */}
+                <Link
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  tabIndex={isOpen ? 0 : -1}
+                  className="inline-flex items-center gap-4 text-xl font-normal uppercase tracking-tight transition-colors duration-300 hover:text-gray-600 md:text-2xl lg:text-3xl"
+                >
+                  {item.label}
+                  <span className="text-lg" aria-hidden>
+                    →
+                  </span>
+                </Link>
+              </li>
+            ))}
           </ul>
 
-          {/* Footer section - Bottom right */}
-          <div className="text-right space-y-4">
-            {/* Footer links */}
-            {/* <div className="flex justify-end gap-6 text-sm uppercase tracking-wide">
-              <a href="/privacy" className="hover:text-gray-600 transition-colors">
-                PRIVACY →
+          <div className="flex justify-end gap-4 text-2xl">
+            {SOCIAL.map((s) => (
+              <a
+                key={s.href}
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={s.name}
+                tabIndex={isOpen ? 0 : -1}
+                className="transition-colors hover:text-gray-600"
+              >
+                {s.label}
               </a>
-              <a href="#careers" className="hover:text-gray-600 transition-colors">
-                CAREERS →
-              </a>
-            </div> */}
-
-            {/* Social media icons */}
-            <div className="flex justify-end gap-4 text-2xl">
-              <a href="https://x.com/hatemrihan?s=21" className="hover:text-gray-600 transition-colors">
-                𝕏
-              </a>
-
-              <a href="https://www.instagram.com/hatemrihann" className="hover:text-gray-600 transition-colors">
-                IG
-              </a>
-              <a href="https://www.linkedin.com/in/hatem-rihan-298753309?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=ios_app" className="hover:text-gray-600 transition-colors">
-                in
-              </a>
-            </div>
+            ))}
           </div>
         </div>
       </div>

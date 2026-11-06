@@ -1,30 +1,51 @@
-import { MongoClient, Db } from 'mongodb';
+import { MongoClient, type Db } from "mongodb";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
-}
+/**
+ * Lazily-created, globally cached MongoDB client.
+ *
+ * - Never throws at import time (so `next build` works without env vars).
+ * - Reuses one connection across hot reloads in dev and across invocations
+ *   of a warm serverless function in production.
+ */
 
-const uri = process.env.MONGODB_URI;
-const options = {
-  serverSelectionTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
-  family: 4, // Force IPv4
+const globalForMongo = globalThis as unknown as {
+  __mongoClientPromise?: Promise<MongoClient>;
 };
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+function getClientPromise(): Promise<MongoClient> {
+  const uri = process.env.MONGODB_URI;
+  if (!uri) {
+    return Promise.reject(
+      new Error('Missing environment variable: "MONGODB_URI"')
+    );
+  }
 
-// Always create a fresh connection (no caching during development)
-client = new MongoClient(uri, options);
-clientPromise = client.connect();
+  if (!globalForMongo.__mongoClientPromise) {
+    const client = new MongoClient(uri, {
+      serverSelectionTimeoutMS: 10_000,
+      socketTimeoutMS: 45_000,
+      maxPoolSize: 10,
+      family: 4,
+    });
+    globalForMongo.__mongoClientPromise = client.connect().catch((error) => {
+      // Allow the next request to retry instead of caching a failed promise.
+      globalForMongo.__mongoClientPromise = undefined;
+      throw error;
+    });
+  }
 
-// Export a module-scoped MongoClient promise. By doing this in a
-// separate module, the client can be shared across functions.
-export default clientPromise;
+  return globalForMongo.__mongoClientPromise;
+}
 
-// Database connection helper
-export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  const client = await clientPromise;
-  const db = client.db(process.env.MONGODB_DB || 'tom_portfolio');
+export function isDatabaseConfigured(): boolean {
+  return Boolean(process.env.MONGODB_URI);
+}
+
+export async function connectToDatabase(): Promise<{
+  client: MongoClient;
+  db: Db;
+}> {
+  const client = await getClientPromise();
+  const db = client.db(process.env.MONGODB_DB || "tom_portfolio");
   return { client, db };
-} 
+}
