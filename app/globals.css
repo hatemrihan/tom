@@ -156,3 +156,28 @@
   /* Run the animation for 20 seconds, infinitely, at a constant speed */
   animation: marquee-right 20s linear infinite;
 }
+
+/* ---------- Component docs: syntax highlighting (shiki dual themes) ---------- */
+.code-block pre {
+  margin: 0;
+  padding: 16px 20px;
+  background: transparent !important;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  min-width: max-content;
+}
+.code-block .shiki,
+.code-block .shiki span {
+  color: var(--shiki-light);
+  background-color: transparent !important;
+}
+.dark .code-block .shiki,
+.dark .code-block .shiki span {
+  color: var(--shiki-dark);
+}
+
+/* ---------- Theme toggle: circular reveal via View Transitions ---------- */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}

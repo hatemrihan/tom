@@ -1,0 +1,493 @@
+/**
+ * Component registry — the single source of truth for the library.
+ * Each entry's `files` are read from disk at build time to render the code
+ * on the docs pages, so docs can never drift from the real source.
+ *
+ * Admin overrides (title, description, hidden, featured) are layered on top
+ * at runtime from the database — see lib/component-settings.ts.
+ */
+
+export type Category =
+  | "Buttons"
+  | "Text"
+  | "Cards & Surfaces"
+  | "Media"
+  | "Inputs"
+  | "Feedback"
+  | "Navigation"
+  | "Backgrounds"
+  | "Cursor & Motion";
+
+export interface RegistryEntry {
+  slug: string;
+  name: string;
+  description: string;
+  category: Category;
+  /** Paths relative to components/library. First file is the main component. */
+  files: string[];
+  /** npm packages required besides react. */
+  dependencies: string[];
+  /** Short notes shown on the docs page. */
+  notes?: string[];
+  /** Credit the idea that inspired the pattern (implementation is original). */
+  inspiration?: { label: string; url: string };
+  /** Preview canvas height in px. */
+  previewHeight?: number;
+  /** Date added (YYYY-MM-DD). */
+  added: string;
+}
+
+const MOTION = ["motion", "clsx", "tailwind-merge"];
+const BASE = ["clsx", "tailwind-merge"];
+
+export const registry: RegistryEntry[] = [
+  /* -------------------------------- Kitchen -------------------------------- */
+  {
+    slug: "hold-to-confirm",
+    name: "Hold to Confirm",
+    description: "A deliberate destructive action: fills while held, drains back if released early.",
+    category: "Buttons",
+    files: ["hold-to-confirm/hold-to-confirm.tsx"],
+    dependencies: MOTION,
+    notes: ["Works with mouse, touch and keyboard (hold Space or Enter).", "Vibrates briefly on supported phones when confirmed."],
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/hold-to-confirm" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "dynamic-button",
+    name: "Dynamic Button",
+    description: "A button that springs to fit its label as the label morphs between states.",
+    category: "Buttons",
+    files: ["dynamic-button/dynamic-button.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/dynamic-button" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "tactile-button",
+    name: "Tactile Button",
+    description: "A physical button with a shaped face and an edge that compresses when pressed.",
+    category: "Buttons",
+    files: ["tactile-button/tactile-button.tsx"],
+    dependencies: BASE,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/tactile-button" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "scramble-text",
+    name: "Scramble Text",
+    description: "Reveals changed characters through a short encrypted scramble.",
+    category: "Text",
+    files: ["scramble-text/scramble-text.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/scramble-text" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "receipt-printer",
+    name: "Receipt Printer",
+    description: "A checkout state that prints a real-looking paper receipt once payment clears.",
+    category: "Feedback",
+    files: ["receipt-printer/receipt-printer.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/receipt-printer" },
+    previewHeight: 460,
+    added: "2026-11-06",
+  },
+  {
+    slug: "playing-cards",
+    name: "Playing Cards",
+    description: "A fully vector playing card, plus a fanned hand you can thumb through and play.",
+    category: "Cards & Surfaces",
+    files: ["playing-cards/playing-cards.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/playing-cards" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "cassette-player",
+    name: "Cassette Player",
+    description: "A tactile tape deck — reels spin and tape winds from spool to spool as it plays.",
+    category: "Media",
+    files: ["cassette-player/cassette-player.tsx"],
+    dependencies: MOTION,
+    notes: ["Pass `src` for real audio; without it the deck runs a simulated timeline."],
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/cassette-player" },
+    previewHeight: 440,
+    added: "2026-11-06",
+  },
+  {
+    slug: "magnetic-drop-zone",
+    name: "Magnetic Drop Zone",
+    description: "A file target that leans toward an incoming drag before the file lands.",
+    category: "Inputs",
+    files: ["magnetic-drop-zone/magnetic-drop-zone.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/magnetic-drop-zone" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "ticket",
+    name: "Ticket",
+    description: "A perforated ticket with composable sections and subtle tilt toward the pointer.",
+    category: "Cards & Surfaces",
+    files: ["ticket/ticket.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/ticket" },
+    previewHeight: 420,
+    added: "2026-11-06",
+  },
+  {
+    slug: "stamp",
+    name: "Stamp",
+    description: "A postage-stamp frame for images, text or any React content — with optional postmark.",
+    category: "Cards & Surfaces",
+    files: ["stamp/stamp.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/stamp" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "scroll-fade-list",
+    name: "Scroll Fade List",
+    description: "A scroll area whose edges fade only when there's more content in that direction.",
+    category: "Cards & Surfaces",
+    files: ["scroll-fade-list/scroll-fade-list.tsx"],
+    dependencies: BASE,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/scroll-fade-list" },
+    previewHeight: 400,
+    added: "2026-11-06",
+  },
+  {
+    slug: "model-selector",
+    name: "Model Selector",
+    description: "A compact, keyboard-friendly picker with a sliding highlight and blur-in menu.",
+    category: "Inputs",
+    files: ["model-selector/model-selector.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/model-selector" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "signature",
+    name: "Signature",
+    description: "An SVG signature that draws itself at a constant pen speed.",
+    category: "Text",
+    files: ["signature/signature.tsx"],
+    dependencies: BASE,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/signature" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "logo-trace-loader",
+    name: "Logo Trace Loader",
+    description: "A comet traces your logo's outline while loading, then the mark fills in.",
+    category: "Feedback",
+    files: ["logo-trace-loader/logo-trace-loader.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/logo-trace-loader" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "iridescent-foil",
+    name: "Iridescent Foil",
+    description: "A holographic card — rainbow foil and diffraction grain slide with the pointer.",
+    category: "Cards & Surfaces",
+    files: ["iridescent-foil/iridescent-foil.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "dqnamo", url: "https://www.dqnamo.com/experiments/iridescent-foil" },
+    previewHeight: 440,
+    added: "2026-11-06",
+  },
+
+  /* ----------------------------- Glass & physics ---------------------------- */
+  {
+    slug: "liquid-glass-logo",
+    name: "Liquid Glass Logo",
+    description: "A droplet becomes a glass tile around your logo, ripples out, then dissolves away.",
+    category: "Feedback",
+    files: ["liquid-glass-logo/liquid-glass-logo.tsx"],
+    dependencies: MOTION,
+    notes: ["Accepts any node — SVG, <img> or text.", "The logo ends at its natural size on the background."],
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/text-reveal/liquid-glass-logo" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "liquid-glass-orb",
+    name: "Liquid Glass Orb",
+    description: "An AI assistant orb — coloured liquid merges inside glass, reacting to each state.",
+    category: "Feedback",
+    files: ["liquid-glass-orb/liquid-glass-orb.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/ai/liquid-glass-orb" },
+    previewHeight: 360,
+    added: "2026-11-06",
+  },
+  {
+    slug: "chromatic-button",
+    name: "Chromatic Button",
+    description: "The label splits into RGB channels that drift toward the pointer.",
+    category: "Buttons",
+    files: ["chromatic-button/chromatic-button.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/button/chromatic-button" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "soap-bubble-button",
+    name: "Soap Bubble",
+    description: "An iridescent bubble that wobbles on hover and pops into droplets on click.",
+    category: "Buttons",
+    files: ["soap-bubble-button/soap-bubble-button.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/button/soap-bubble" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "showcase-pointer",
+    name: "Showcase Pointer",
+    description: "A cursor follower that morphs into a label over anything with data-cursor.",
+    category: "Cursor & Motion",
+    files: ["showcase-pointer/showcase-pointer.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/cursor/showcase-pointer" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "refracted-text",
+    name: "Refracted Text",
+    description: "Text seen through moving water — an animated displacement field bends the glyphs.",
+    category: "Text",
+    files: ["refracted-text/refracted-text.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/text-effect/refracted-text" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "fractal-glass",
+    name: "Fluted Glass",
+    description: "An image behind reeded glass; each rib magnifies its slice as the pointer moves.",
+    category: "Media",
+    files: ["fractal-glass/fractal-glass.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/image/fractal-glass" },
+    previewHeight: 420,
+    added: "2026-11-06",
+  },
+  {
+    slug: "fan-gallery",
+    name: "Fan Gallery",
+    description: "Prints fanned like a hand of cards; click one to open it with a shared transition.",
+    category: "Media",
+    files: ["fan-gallery/fan-gallery.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/gallery/fan-gallery" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "topographic-flow",
+    name: "Topographic Flow",
+    description: "Living contour lines traced with marching squares over drifting noise.",
+    category: "Backgrounds",
+    files: ["topographic-flow/topographic-flow.tsx", "_lib/noise.ts"],
+    dependencies: BASE,
+    notes: ["Line colour follows CSS `color`.", "Pauses automatically while offscreen."],
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/background/topographic-flow" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "topographic-terrain",
+    name: "Topographic Terrain",
+    description: "Stacked ridge lines that read as a 3D landscape and swell under the pointer.",
+    category: "Backgrounds",
+    files: ["topographic-terrain/topographic-terrain.tsx", "_lib/noise.ts"],
+    dependencies: BASE,
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/background/topographic-terrain" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "shape-physics",
+    name: "Shape Physics",
+    description: "Labelled shapes drop in, tumble and pile up — grab and fling them.",
+    category: "Backgrounds",
+    files: ["shape-physics/shape-physics.tsx"],
+    dependencies: BASE,
+    notes: ["A ~100 line custom physics engine — no library required."],
+    inspiration: { label: "React Drops", url: "https://reactdrops.dev/components/background/shape-physics" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+
+  /* ----------------------------- Interaction kit ---------------------------- */
+  {
+    slug: "dynamic-island",
+    name: "Dynamic Island",
+    description: "A black pill that springs between sizes as live activities come and go.",
+    category: "Feedback",
+    files: ["dynamic-island/dynamic-island.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper2" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "theme-toggle",
+    name: "Theme Toggle",
+    description: "The new theme expands as a circle from the button; sun morphs into moon.",
+    category: "Buttons",
+    files: ["theme-toggle/theme-toggle.tsx"],
+    dependencies: MOTION,
+    notes: [
+      "Uses the View Transitions API with an instant fallback.",
+      "Add `::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }` to your CSS.",
+    ],
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper26" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "rolling-text",
+    name: "Rolling Text",
+    description: "Letters roll to an identical copy on hover with a stagger — perfect for nav links.",
+    category: "Text",
+    files: ["rolling-text/rolling-text.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper27" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "number-flow",
+    name: "Number Flow",
+    description: "Digits spin like reels to their new value; formatting is handled by Intl.",
+    category: "Text",
+    files: ["number-flow/number-flow.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper37" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "text-reveal-scroll",
+    name: "Scroll Text Reveal",
+    description: "Words light up one by one as the paragraph scrolls past.",
+    category: "Text",
+    files: ["text-reveal-scroll/text-reveal-scroll.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper31" },
+    previewHeight: 400,
+    added: "2026-11-06",
+  },
+  {
+    slug: "image-trail",
+    name: "Image Trail",
+    description: "Images pop in along the cursor path and shrink away behind it.",
+    category: "Cursor & Motion",
+    files: ["image-trail/image-trail.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper18" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "progressive-blur",
+    name: "Progressive Blur",
+    description: "A graduated backdrop blur made from stacked, masked layers. Server-component safe.",
+    category: "Cards & Surfaces",
+    files: ["progressive-blur/progressive-blur.tsx"],
+    dependencies: BASE,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper41" },
+    previewHeight: 400,
+    added: "2026-11-06",
+  },
+  {
+    slug: "expand-on-hover",
+    name: "Expand on Hover",
+    description: "Image panels where the hovered one expands and the rest compress.",
+    category: "Media",
+    files: ["expand-on-hover/expand-on-hover.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper52" },
+    previewHeight: 360,
+    added: "2026-11-06",
+  },
+  {
+    slug: "gooey-menu",
+    name: "Gooey Menu",
+    description: "Action items squeeze out of a floating button like liquid.",
+    category: "Navigation",
+    files: ["gooey-menu/gooey-menu.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper46" },
+    previewHeight: 360,
+    added: "2026-11-06",
+  },
+  {
+    slug: "perspective-carousel",
+    name: "Perspective Carousel",
+    description: "A 3D cover-flow carousel with drag, click and keyboard navigation.",
+    category: "Media",
+    files: ["perspective-carousel/perspective-carousel.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper47" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "ai-input",
+    name: "AI Input",
+    description: "A growing prompt box with a focus glow, suggestions and a morphing send button.",
+    category: "Inputs",
+    files: ["ai-input/ai-input.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper81" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "stairs-preloader",
+    name: "Stairs Preloader",
+    description: "Counts to 100, then lifts away as a staircase to reveal the page.",
+    category: "Feedback",
+    files: ["stairs-preloader/stairs-preloader.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper9" },
+    previewHeight: 380,
+    added: "2026-11-06",
+  },
+  {
+    slug: "animated-tooltip",
+    name: "Animated Tooltip",
+    description: "A tooltip that springs in and sways with the pointer as if hanging.",
+    category: "Cursor & Motion",
+    files: ["animated-tooltip/animated-tooltip.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper43" },
+    added: "2026-11-06",
+  },
+  {
+    slug: "card-stack",
+    name: "Card Stack",
+    description: "A swipeable stack — fling the top card away and the next one rises.",
+    category: "Cards & Surfaces",
+    files: ["card-stack/card-stack.tsx"],
+    dependencies: MOTION,
+    inspiration: { label: "Skiper UI", url: "https://skiper-ui.com/v1/skiper48" },
+    previewHeight: 440,
+    added: "2026-11-06",
+  },
+];
+
+export const CATEGORIES: Category[] = [
+  "Buttons",
+  "Text",
+  "Cards & Surfaces",
+  "Media",
+  "Inputs",
+  "Feedback",
+  "Navigation",
+  "Backgrounds",
+  "Cursor & Motion",
+];
+
+export function getEntry(slug: string) {
+  return registry.find((e) => e.slug === slug);
+}
