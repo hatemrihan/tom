@@ -93,11 +93,16 @@ export default async function ComponentPage({ params }: Params) {
         </ol>
       </section>
 
-      {(entry.notes?.length || entry.inspiration) && (
+      {(entry.notes?.length || entry.inspiration || sources[0].code.includes("container?: RefObject")) && (
         <section className="mt-12">
           <h2 className="mb-3 px-1 text-[15px] font-medium">Notes</h2>
           <ul className="space-y-2 rounded-2xl border border-neutral-200/80 bg-white p-5 text-sm leading-relaxed text-neutral-600 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-400">
-            {entry.notes?.map((n) => (
+            {[
+              ...(entry.notes ?? []),
+              ...(sources[0].code.includes("container?: RefObject")
+                ? ["Inside your own scroll area? Pass its ref as `container` and give that element `position: relative` so scroll offsets measure correctly."]
+                : []),
+            ].map((n) => (
               <li key={n} className="flex gap-2">
                 <span className="text-neutral-300">—</span>
                 <span>{n}</span>

@@ -12,6 +12,8 @@ export interface StairsPreloaderProps {
   /** Time spent counting to 100 (ms). */
   duration?: number;
   label?: string;
+  /** "double" splits columns — alternate ones leave upward and downward. */
+  variant?: "single" | "double";
   onComplete?: () => void;
   className?: string;
 }
@@ -20,7 +22,7 @@ export interface StairsPreloaderProps {
  * A loading screen that counts to 100, then lifts away as a staircase of
  * columns, revealing the content underneath.
  */
-export function StairsPreloader({ children, columns = 6, duration = 1800, label = "Loading", onComplete, className }: StairsPreloaderProps) {
+export function StairsPreloader({ children, columns = 6, duration = 1800, label = "Loading", variant = "single", onComplete, className }: StairsPreloaderProps) {
   const [done, setDone] = useState(false);
   const count = useMotionValue(0);
   const rounded = useTransform(count, (v) => String(Math.round(v)).padStart(3, "0"));
@@ -53,7 +55,7 @@ export function StairsPreloader({ children, columns = 6, duration = 1800, label 
                 key={i}
                 className="h-full flex-1 bg-neutral-950 dark:bg-white"
                 style={{ marginLeft: -1 }}
-                exit={{ y: "-100%" }}
+                exit={{ y: variant === "double" && i % 2 ? "100%" : "-100%" }}
                 transition={{ duration: 0.55, ease: [0.76, 0, 0.24, 1], delay: i * 0.06 }}
               />
             ))}
