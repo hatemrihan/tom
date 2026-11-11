@@ -3,7 +3,8 @@
     "allow": [
       "ClaudeInChromeDomain(www.dqnamo.com)",
       "ClaudeInChromeDomain(localhost:3123)",
-      "ClaudeInChromeDomain(skiper-ui.com)"
+      "ClaudeInChromeDomain(skiper-ui.com)",
+      "ClaudeInChromeDomain(localhost:3000)"
     ]
   }
 }

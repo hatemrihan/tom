@@ -1,7 +1,9 @@
-import Nav from "../sections/Nav";
+import { registry } from "@/components/library/registry";
+import { DocsNav } from "../components/_ui/DocsNav";
+import { WorkWithMe } from "../components/_ui/DocsChrome";
+import { site } from "@/lib/site";
+import { Mark } from "../components/_ui/Mark";
 import { ContactForm } from "./ContactForm";
-
-const EMAIL = "hatemrihann@gmail.com";
 
 const AGREEMENT: { title: string; clauses: string[] }[] = [
   {
@@ -102,60 +104,56 @@ const AGREEMENT: { title: string; clauses: string[] }[] = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#f2f2f2]">
-      <Nav />
+    <>
+      <DocsNav count={registry.length} theme={false} surface="bg-white/85" />
 
-      <main className="mx-auto w-full max-w-[720px] px-6 pb-32 pt-36 md:pt-44">
-        <p className="text-[13px] uppercase tracking-[0.25em] text-[#3b4a6b]/80">Tom / Contact</p>
-        <h1 className="mt-5 font-sans text-5xl tracking-tight text-[#3b4a6b] md:text-6xl">Get in touch.</h1>
-        <p className="mt-6 max-w-xl font-sans text-[17px] leading-relaxed text-[#3b4a6b]/75">
-          Tell me a little about you and your project — it takes under a minute. I&apos;ll reply personally,
-          usually within a day.
-        </p>
-        <p className="mt-3 font-sans text-[17px] text-[#3b4a6b]/75">
-          Prefer email?{" "}
-          <a
-            href={`mailto:${EMAIL}`}
-            className="text-[#3b4a6b] underline decoration-[#3b4a6b]/30 underline-offset-4 transition hover:decoration-[#3b4a6b]"
-          >
-            {EMAIL}
-          </a>
-        </p>
-        <p className="mt-4 text-[12px] uppercase tracking-[0.18em] text-[#3b4a6b]/45">Studio — Egypt · Remote worldwide</p>
+      <main className="min-h-dvh bg-white px-6 pb-28 text-[11px] font-medium uppercase leading-[1.35] tracking-[0.01em] text-neutral-900 sm:px-10">
+        {/* the same quiet opening as the home page */}
+        <section aria-label="Contact" className="flex flex-col items-center pt-28 sm:pt-36">
+          <Mark className="size-16" />
+          <div className="mt-5 grid grid-cols-1 gap-x-9 gap-y-4 text-center leading-[1.25] sm:grid-cols-2 sm:text-left">
+            <div className="sm:text-right">
+              <h1>
+                Get in touch
+                <br />
+                It takes a minute
+              </h1>
+            </div>
+            <div>
+              <p>
+                Or write to
+                <br />
+                <a href={`mailto:${site.email}`} className="underline underline-offset-4">
+                  {site.email}
+                </a>
+              </p>
+            </div>
+          </div>
+        </section>
 
-        <div className="mt-16 md:mt-20">
+        <div className="mx-auto mt-20 max-w-xl sm:mt-24">
           <ContactForm />
         </div>
 
-        {/* Client agreement */}
-        <section aria-labelledby="agreement-title" className="mt-32">
-          <p className="text-[13px] uppercase tracking-[0.25em] text-[#3b4a6b]/80">Before we start</p>
-          <h2 id="agreement-title" className="mt-4 font-sans text-3xl tracking-tight text-[#3b4a6b]">
-            Client agreement
-          </h2>
-          <p className="mt-3 max-w-xl font-sans text-[15px] leading-relaxed text-[#3b4a6b]/70">
-            The short version of how I work. Every project also gets a proposal signed by both of us.
-          </p>
+        {/* how I work, folded away until someone wants it */}
+        <section aria-labelledby="agreement-title" className="mx-auto mt-32 max-w-xl">
+          <h2 id="agreement-title">Client agreement</h2>
+          <p className="mt-1 font-normal text-neutral-500">The short version of how I work. Every project also gets a proposal signed by both of us.</p>
 
-          <div className="mt-10 border-t border-[#3b4a6b]/15">
+          <div className="mt-6 border-t border-neutral-200">
             {AGREEMENT.map((section, i) => (
-              <details key={section.title} className="group border-b border-[#3b4a6b]/15">
-                <summary className="flex cursor-pointer list-none items-center gap-5 py-5 text-[#3b4a6b] [&::-webkit-details-marker]:hidden">
-                  <span className="w-6 font-sans text-xs tabular-nums text-[#3b4a6b]/45">
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="flex-1 text-[13px] uppercase tracking-[0.2em]">{section.title}</span>
-                  <span
-                    aria-hidden
-                    className="text-lg leading-none text-[#3b4a6b]/50 transition-transform duration-300 group-open:rotate-45"
-                  >
+              <details key={section.title} className="group border-b border-neutral-200">
+                <summary className="flex cursor-pointer list-none items-center gap-4 py-3 [&::-webkit-details-marker]:hidden">
+                  <span className="w-5 font-normal tabular-nums text-neutral-400">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="flex-1">{section.title}</span>
+                  <span aria-hidden className="font-normal text-neutral-400 transition-transform duration-300 group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <ol className="space-y-3 pb-6 pl-11 pr-4 font-sans text-[15px] leading-relaxed text-[#3b4a6b]/75">
+                <ol className="space-y-2 pb-5 pl-9 pr-4 text-[12px] font-normal normal-case leading-[1.45] tracking-normal text-neutral-600">
                   {section.clauses.map((clause, j) => (
                     <li key={j} className="flex gap-3">
-                      <span className="shrink-0 tabular-nums text-[#3b4a6b]/40">
+                      <span className="shrink-0 tabular-nums text-neutral-400">
                         {i + 1}.{j + 1}
                       </span>
                       <span>{clause}</span>
@@ -166,7 +164,9 @@ export default function ContactPage() {
             ))}
           </div>
         </section>
+
+        <WorkWithMe />
       </main>
-    </div>
+    </>
   );
 }

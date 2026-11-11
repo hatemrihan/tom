@@ -17,20 +17,18 @@ export interface SourceFile {
 const cache = new Map<string, Promise<SourceFile>>();
 
 /**
- * Prepares a library file for display/copying: rewrites the internal
- * `../_lib/*` imports to the paths users will have after copying.
+ * Prepares a library file for display. A usage example imports from the
+ * published package; a component file is shown exactly as `npx tomm-ui add`
+ * copies it, at the path it lands on.
  */
 function toPublicSource(relPath: string, raw: string) {
-  return raw
-    .replace(/from "\.\.\/_lib\/cn"/g, 'from "@/lib/utils"')
-    .replace(/from "\.\.\/_lib\/noise"/g, 'from "@/lib/noise"')
-    .replace(/from "\.\.\/([a-z-]+)\/\1"/g, 'from "@/components/tom/$1"');
+  if (!relPath.startsWith("demos/")) return raw;
+  return raw.replace(/from "\.\.\/([a-z-]+)\/\1"/g, 'from "tomm-ui"');
 }
 
 function targetFor(relPath: string) {
-  if (relPath.startsWith("_lib/")) return `lib/${path.basename(relPath)}`;
   if (relPath.startsWith("demos/")) return `app/example.tsx`;
-  return `components/tom/${path.basename(relPath)}`;
+  return `components/tomm/${relPath}`;
 }
 
 export function loadSource(relPath: string): Promise<SourceFile> {
@@ -55,6 +53,11 @@ export function loadSource(relPath: string): Promise<SourceFile> {
   return promise;
 }
 
+/** Highlights a short snippet for the docs. */
+export function highlight(code: string, lang: "tsx" | "css" | "dart" | "bash") {
+  return codeToHtml(code, { lang, themes: { light: "github-light", dark: "github-dark-default" }, defaultColor: false });
+}
+
 export const CN_SOURCE = `import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -62,3 +65,23 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 `;
+
+const FLUTTER_DIR = path.join(process.cwd(), "flutter", "tom_components", "lib", "src");
+
+/** Prepares a Dart file from the Flutter package for display and copying. */
+export function loadFlutterSource(file: string): Promise<SourceFile> {
+  const key = `flutter:${file}`;
+  const cached = cache.get(key);
+  if (cached) return cached;
+
+  const promise = (async () => {
+    const abs = path.join(FLUTTER_DIR, file);
+    if (!abs.startsWith(FLUTTER_DIR)) throw new Error("Invalid path");
+    const code = (await readFile(abs, "utf8")).trimEnd() + "\n";
+    const html = await codeToHtml(code, { lang: "dart", themes: { light: "github-light", dark: "github-dark-default" }, defaultColor: false });
+    return { name: file, target: `lib/tomm/${file}`, code, html };
+  })();
+
+  cache.set(key, promise);
+  return promise;
+}

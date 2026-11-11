@@ -83,7 +83,7 @@ const projects: Project[] = [
     name: "FARAG",
     cover: FaragOneImage,
     previewImages: [FaragOneImage, FaragTwoImage, FaragThreeImage, FaragFourImage, FaragFiveImage, FaragSixImage],
-    link: "https://faragg.netlify.app/",
+    link: "https://faragg.vercel.app/",
     description:
       "A brand identity for a photography studio with a focus on minimalist design principles — built with Three.js, GSAP and Framer Motion.",
     type: "Photography — Branding",

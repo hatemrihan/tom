@@ -1,0 +1,8 @@
+/* The package's own stylesheet: only the classes its components use, compiled at build time
+   and shipped inside the JavaScript, so nobody has to configure anything.
+   The layer order is the same as Tailwind's, so this sits correctly beside an app's own Tailwind. */
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@custom-variant dark (&:where(.dark, .dark *));
+@source "./src";

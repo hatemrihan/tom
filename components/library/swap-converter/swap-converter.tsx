@@ -1,120 +1,170 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { motion } from "motion/react";
 import { cn } from "../_lib/cn";
 
-export interface SwapAsset {
-  symbol: string;
-  name: string;
-  /** Price in the base unit (e.g. USD). */
-  price: number;
-  color: string;
-  balance?: number;
-}
+/** Units of each currency per 1 EUR. */
+export type Rates = Record<string, number>;
 
 export interface SwapConverterProps {
-  from?: SwapAsset;
-  to?: SwapAsset;
+  /** Currency codes offered in the two pickers. Leave out to offer every currency the rates cover. */
+  currencies?: string[];
+  from?: string;
+  to?: string;
+  /**
+   * Where live rates come from: JSON with a `date` and an object of rates
+   * per 1 EUR (under `rates` or `eur`). The default is the open
+   * fawazahmed0/currency-api on jsDelivr: about 160 currencies, updated
+   * daily, free and without a key.
+   */
+  endpoint?: string;
+  /** Refetch interval in minutes. */
+  refresh?: number;
+  /** Rates used until the first response, and if the request fails. */
+  fallback?: Rates;
   className?: string;
 }
 
-const USD: SwapAsset = { symbol: "USD", name: "US Dollar", price: 1, color: "#16a34a", balance: 1250 };
-const EGP: SwapAsset = { symbol: "EGP", name: "Egyptian Pound", price: 0.0205, color: "#dc2626", balance: 0 };
+/** Shown first; everything else follows in alphabetical order. */
+const PINNED = ["USD", "EUR", "GBP", "EGP", "SAR", "AED", "JPY", "CHF", "CAD", "AUD", "CNY", "INR", "TRY"];
+const FALLBACK: Rates = { EUR: 1, USD: 1.12, GBP: 0.84, EGP: 55, SAR: 4.2, AED: 4.1, JPY: 177, CHF: 0.92, CAD: 1.59, AUD: 1.62, CNY: 7.48, INR: 105, TRY: 56 };
 
 const fmt = (n: number, max = 2) => new Intl.NumberFormat("en-US", { maximumFractionDigits: max }).format(n);
+const label = "text-[11px] font-medium uppercase leading-[1.35] tracking-[0.01em]";
 
 /**
- * A swap/convert card: type a big amount on top, see the converted value
- * below, and flip the pair with a spinning button. Assets are just props.
+ * A currency converter on live rates for every currency: type an amount,
+ * read the result, flip the pair. Two numbers, two pickers and one line of small print.
  */
-export function SwapConverter({ from = USD, to = EGP, className }: SwapConverterProps) {
-  const [pair, setPair] = useState<[SwapAsset, SwapAsset]>([from, to]);
-  const [amount, setAmount] = useState("");
+export function SwapConverter({
+  currencies,
+  from = "USD",
+  to = "EUR",
+  endpoint = "https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/eur.min.json",
+  refresh = 60,
+  fallback = FALLBACK,
+  className,
+}: SwapConverterProps) {
+  const [pair, setPair] = useState<[string, string]>([from, to]);
+  const [amount, setAmount] = useState("100");
   const [turns, setTurns] = useState(0);
+  const [live, setLive] = useState<{ rates: Rates; date: string } | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    const load = async () => {
+      try {
+        const res = await fetch(endpoint);
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as { date: string; rates?: Rates; eur?: Rates };
+        const raw = data.rates ?? data.eur;
+        if (cancelled || !raw) return;
+        const rates: Rates = { EUR: 1 };
+        for (const [code, value] of Object.entries(raw)) if (value > 0) rates[code.toUpperCase()] = value;
+        setLive({ rates, date: data.date });
+        setFailed(false);
+      } catch {
+        if (!cancelled) setFailed(true);
+      }
+    };
+    load();
+    const timer = setInterval(load, Math.max(1, refresh) * 60_000);
+    return () => {
+      cancelled = true;
+      clearInterval(timer);
+    };
+  }, [endpoint, refresh]);
+
+  const rates = live?.rates ?? fallback;
+
+  // Real currencies only (the feed also carries metals and crypto), favourites first.
+  const codes = useMemo(() => {
+    if (currencies) return currencies;
+    const real = new Set(typeof Intl.supportedValuesOf === "function" ? Intl.supportedValuesOf("currency") : Object.keys(rates));
+    const available = Object.keys(rates).filter((c) => real.has(c));
+    return [...PINNED.filter((c) => available.includes(c)), ...available.filter((c) => !PINNED.includes(c)).sort()];
+  }, [currencies, rates]);
+  const names = useMemo(() => new Intl.DisplayNames(["en"], { type: "currency" }), []);
+  const rate = (rates[pair[1]] ?? 1) / (rates[pair[0]] ?? 1);
   const value = parseFloat(amount) || 0;
-  const converted = (value * pair[0].price) / pair[1].price;
-  const over = pair[0].balance !== undefined && value > pair[0].balance;
+  const date = live && new Date(live.date + "T00:00:00").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+
+  const picker = (index: 0 | 1) => (
+    <select
+      aria-label={index === 0 ? "From currency" : "To currency"}
+      value={pair[index]}
+      onChange={(e) => setPair((p) => (index === 0 ? [e.target.value, p[1]] : [p[0], e.target.value]))}
+      // Options read "EGP  Egyptian Pound"; the closed control is clipped to the code.
+      className={cn(label, "w-[3.4ch] cursor-pointer appearance-none overflow-hidden whitespace-nowrap bg-transparent text-neutral-500 outline-none hover:text-neutral-900 focus-visible:underline dark:hover:text-white")}
+    >
+      {codes.map((c) => (
+        <option key={c} value={c}>
+          {c}  {names.of(c)}
+        </option>
+      ))}
+    </select>
+  );
+
+  const figure = "w-full bg-transparent text-5xl font-medium tabular-nums leading-none tracking-[-0.04em] text-neutral-900 outline-none dark:text-white";
 
   return (
-    <div className={cn("w-80 space-y-1.5", className)}>
-      <div className="rounded-3xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <AssetRow asset={pair[0]} hint={pair[0].balance !== undefined ? `Balance ${fmt(pair[0].balance)}` : undefined}>
-          {pair[0].balance !== undefined && (
-            <button
-              type="button"
-              onClick={() => setAmount(String(pair[0].balance))}
-              className="rounded-full bg-neutral-100 px-2.5 py-1 text-[11px] font-medium text-neutral-700 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-300"
-            >
-              Use max
-            </button>
-          )}
-        </AssetRow>
+    <div className={cn("w-72", className)}>
+      <div className="flex items-end justify-between gap-4 border-b border-neutral-200 pb-3 dark:border-neutral-800">
         <input
           inputMode="decimal"
           value={amount}
           onChange={(e) => {
             const v = e.target.value.replace(/[^\d.]/g, "");
-            if ((v.match(/\./g) ?? []).length <= 1 && v.length <= 12) setAmount(v);
+            if ((v.match(/\./g) ?? []).length <= 1 && v.length <= 9) setAmount(v);
           }}
           placeholder="0"
-          aria-label={`Amount in ${pair[0].symbol}`}
-          className={cn(
-            "mt-4 w-full bg-transparent text-center text-5xl font-medium tabular-nums tracking-tight outline-none placeholder:text-neutral-300 dark:placeholder:text-neutral-700",
-            over ? "text-red-500" : "text-neutral-900 dark:text-white"
-          )}
+          aria-label={`Amount in ${pair[0]}`}
+          className={cn(figure, "min-w-0 placeholder:text-neutral-300 dark:placeholder:text-neutral-700")}
         />
-        <p className="mt-1 text-center text-xs text-neutral-500">{over ? "Not enough balance" : `≈ $${fmt(value * pair[0].price)}`}</p>
+        {picker(0)}
       </div>
 
-      <div className="relative z-10 -my-4 flex justify-center">
+      <div className="flex items-end justify-between gap-4 pt-3">
+        <motion.output key={`${pair[1]}${value}${rate}`} initial={{ opacity: 0.35, y: 3 }} animate={{ opacity: 1, y: 0 }} className={cn(figure, "block truncate")}>
+          {fmt(value * rate)}
+        </motion.output>
+        {picker(1)}
+      </div>
+
+      <div className={cn(label, "mt-5 flex items-center justify-between gap-4 font-normal text-neutral-500")}>
+        <p>
+          1 {pair[0]} = {fmt(rate, 4)} {pair[1]}
+          <br />
+          {live ? (
+            <span className="inline-flex items-center gap-1.5">
+              <span className="size-1.5 rounded-full bg-emerald-500" />
+              Live rate, {date}
+            </span>
+          ) : failed ? (
+            "Offline, showing saved rates"
+          ) : (
+            "Fetching rates…"
+          )}
+        </p>
         <motion.button
           type="button"
-          aria-label="Swap direction"
+          aria-label="Swap currencies"
           onClick={() => {
             setPair(([a, b]) => [b, a]);
-            setAmount(converted ? String(+converted.toFixed(2)) : "");
             setTurns((t) => t + 1);
           }}
           animate={{ rotate: turns * 180 }}
           whileTap={{ scale: 0.9 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="flex size-9 items-center justify-center rounded-xl border-4 border-neutral-50 bg-neutral-100 text-neutral-600 dark:border-neutral-950 dark:bg-neutral-800 dark:text-neutral-300"
+          transition={{ type: "spring", stiffness: 300, damping: 22 }}
+          className="flex size-8 shrink-0 cursor-pointer items-center justify-center rounded-full border border-neutral-300 text-neutral-900 outline-none transition-colors hover:bg-neutral-900 hover:text-white focus-visible:ring-2 focus-visible:ring-neutral-400 dark:border-neutral-700 dark:text-white dark:hover:bg-white dark:hover:text-neutral-900"
         >
-          ↓
+          <svg viewBox="0 0 16 16" className="size-3.5" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M5 2v12m0 0-3-3m3 3 3-3M11 14V2m0 0L8 5m3-3 3 3" />
+          </svg>
         </motion.button>
       </div>
-
-      <div className="rounded-3xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
-        <AssetRow asset={pair[1]} hint={`1 ${pair[0].symbol} = ${fmt(pair[0].price / pair[1].price, 4)} ${pair[1].symbol}`}>
-          <motion.span key={converted} initial={{ opacity: 0.4, y: 4 }} animate={{ opacity: 1, y: 0 }} className="text-lg font-medium tabular-nums text-neutral-900 dark:text-white">
-            {fmt(converted)}
-          </motion.span>
-        </AssetRow>
-      </div>
-
-      <button
-        type="button"
-        disabled={!value || over}
-        className="h-11 w-full rounded-2xl bg-neutral-900 text-sm font-medium text-white transition active:scale-[0.99] disabled:bg-neutral-200 disabled:text-neutral-400 dark:bg-white dark:text-neutral-900 dark:disabled:bg-neutral-800"
-      >
-        {!value ? "Enter an amount" : over ? "Insufficient balance" : `Convert ${pair[0].symbol} → ${pair[1].symbol}`}
-      </button>
-    </div>
-  );
-}
-
-function AssetRow({ asset, hint, children }: { asset: SwapAsset; hint?: string; children?: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-3">
-      <span className="flex size-9 items-center justify-center rounded-full text-[11px] font-bold text-white" style={{ background: asset.color }}>
-        {asset.symbol.slice(0, 3)}
-      </span>
-      <div className="min-w-0 flex-1">
-        <p className="text-sm font-medium text-neutral-900 dark:text-white">{asset.name}</p>
-        {hint && <p className="truncate text-[11px] text-neutral-500">{hint}</p>}
-      </div>
-      {children}
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Dock } from "./_ui/Dock";
+import { registry } from "@/components/library/registry";
+import { DocsNav } from "./_ui/DocsNav";
 
 export const metadata: Metadata = {
   title: {
@@ -23,9 +24,9 @@ export default function ComponentsLayout({ children }: { children: React.ReactNo
   return (
     <div id="docs-root" suppressHydrationWarning className="font-sans">
       <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      <div className="min-h-dvh bg-[#fafafa] text-neutral-900 antialiased transition-colors dark:bg-[#0a0a0a] dark:text-neutral-100">
+      <div className="min-h-dvh bg-[#fafafa] text-[11px] font-medium uppercase leading-[1.35] tracking-[0.01em] text-neutral-900 antialiased transition-colors dark:bg-stone-900 dark:text-stone-200">
+        <DocsNav count={registry.length} />
         {children}
-        <Dock />
       </div>
     </div>
   );

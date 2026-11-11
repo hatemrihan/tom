@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Check, Copy } from "lucide-react";
+import { describeCopy, track } from "@/lib/track";
 import { cn } from "@/lib/utils";
 
 export interface CodeFile {
@@ -21,12 +22,13 @@ export function CopyButton({ text, className, label = "Copy" }: { text: string; 
         try {
           await navigator.clipboard.writeText(text);
           setCopied(true);
+          track("copy", describeCopy(text));
           setTimeout(() => setCopied(false), 1600);
         } catch {}
       }}
       aria-label={copied ? "Copied" : label}
       className={cn(
-        "inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-xs text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 active:scale-[0.97] dark:hover:bg-neutral-800 dark:hover:text-white",
+        "inline-flex h-8 items-center gap-1.5 rounded-lg px-2.5 text-neutral-500 transition hover:bg-neutral-100 hover:text-neutral-900 active:scale-[0.97] dark:hover:bg-neutral-800 dark:hover:text-white",
         className
       )}
     >
@@ -48,11 +50,12 @@ export function CopyButton({ text, className, label = "Copy" }: { text: string; 
 export function CodeTabs({ files }: { files: CodeFile[] }) {
   const [active, setActive] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const marker = useId();
   const file = files[active];
   const long = file.code.split("\n").length > 28;
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-neutral-200/80 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+    <div className="overflow-hidden rounded-xl border border-neutral-200/80 bg-white font-normal normal-case tracking-normal dark:border-neutral-800 dark:bg-neutral-950">
       <div className="flex items-center gap-1 border-b border-neutral-100 px-2 py-1.5 dark:border-neutral-900">
         <div className="flex min-w-0 flex-1 gap-1 overflow-x-auto [scrollbar-width:none]">
           {files.map((f, i) => (
@@ -68,7 +71,7 @@ export function CodeTabs({ files }: { files: CodeFile[] }) {
                 i === active ? "text-neutral-900 dark:text-white" : "text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200"
               )}
             >
-              {i === active && <motion.span layoutId="code-tab" className="absolute inset-0 rounded-lg bg-neutral-100 dark:bg-neutral-800" transition={{ type: "spring", bounce: 0.1, duration: 0.35 }} />}
+              {i === active && <motion.span layoutId={marker} className="absolute inset-0 rounded-lg bg-neutral-100 dark:bg-neutral-800" transition={{ type: "spring", bounce: 0.1, duration: 0.35 }} />}
               <span className="relative">{f.label}</span>
             </button>
           ))}

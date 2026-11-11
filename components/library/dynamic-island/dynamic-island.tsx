@@ -20,8 +20,9 @@ export interface DynamicIslandProps {
 }
 
 /**
- * A black pill that springs between sizes as its content changes, with the
- * old content blurring out and the new content blurring in.
+ * A small pill that springs between sizes as its content changes, with the
+ * old content blurring out and the new content blurring in. Use it for the
+ * small things an app says: saved, copied, publishing, live.
  */
 export function DynamicIsland({ view, className }: DynamicIslandProps) {
   return (
@@ -30,7 +31,7 @@ export function DynamicIsland({ view, className }: DynamicIslandProps) {
       animate={{ width: view.width, height: view.height, borderRadius: view.radius ?? Math.min(view.height / 2, 32) }}
       transition={{ type: "spring", bounce: 0.35, duration: 0.6 }}
       className={cn(
-        "relative mx-auto overflow-hidden bg-black text-white shadow-[0_12px_30px_-10px_rgba(0,0,0,0.5)]",
+        "relative mx-auto overflow-hidden border border-neutral-200 bg-white text-neutral-900 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.18)] dark:border-neutral-800 dark:bg-neutral-900 dark:text-white",
         className
       )}
     >
@@ -52,62 +53,58 @@ export function DynamicIsland({ view, className }: DynamicIslandProps) {
 
 /* ---------- Ready-made views you can use as-is or as examples ---------- */
 
+const label = "text-[11px] font-medium uppercase leading-[1.3] tracking-[0.01em]";
+
 export const islandViews = {
+  /** Resting: a short pill with a faint rule. */
   idle: (): IslandView => ({
     key: "idle",
-    width: 120,
-    height: 34,
-    content: <div className="flex h-full items-center justify-end px-3"><span className="size-2 rounded-full bg-neutral-800" /></div>,
+    width: 96,
+    height: 30,
+    content: (
+      <div className="flex h-full items-center justify-center">
+        <span className="h-px w-5 bg-current opacity-30" />
+      </div>
+    ),
   }),
-  ring: (name: string): IslandView => ({
-    key: "ring",
+  /** One line: "Saved", "Copied to clipboard". */
+  status: (text: string): IslandView => ({
+    key: `status-${text}`,
+    width: Math.max(140, text.length * 7.4 + 40),
+    height: 34,
+    content: (
+      <div className={cn(label, "flex h-full items-center justify-center whitespace-nowrap")}>
+        {text}
+      </div>
+    ),
+  }),
+  /** A label, a percentage and a thin bar. `value` runs from 0 to 1. */
+  progress: (text: string, value: number): IslandView => ({
+    key: `progress-${text}`,
+    width: 240,
+    height: 46,
+    content: (
+      <div className={cn(label, "flex h-full flex-col justify-center gap-2 px-5")}>
+        <div className="flex justify-between">
+          <span>{text}</span>
+          <span className="font-normal tabular-nums opacity-50">{Math.round(value * 100)}%</span>
+        </div>
+        <div className="h-px bg-current/15">
+          <motion.div className="h-full origin-left bg-current" initial={{ scaleX: 0 }} animate={{ scaleX: value }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+      </div>
+    ),
+  }),
+  /** Two lines: a headline and a quieter detail. */
+  notice: (title: string, detail: string): IslandView => ({
+    key: `notice-${title}`,
     width: 280,
     height: 60,
+    radius: 22,
     content: (
-      <div className="flex h-full items-center gap-3 px-3">
-        <span className="flex size-9 items-center justify-center rounded-full bg-neutral-700 text-sm">{name[0]}</span>
-        <div className="flex-1 leading-tight">
-          <p className="text-[11px] text-white/50">Incoming call</p>
-          <p className="text-sm font-medium">{name}</p>
-        </div>
-        <span className="flex size-9 items-center justify-center rounded-full bg-red-500">✕</span>
-        <span className="flex size-9 items-center justify-center rounded-full bg-green-500">✆</span>
-      </div>
-    ),
-  }),
-  timer: (time: string): IslandView => ({
-    key: "timer",
-    width: 180,
-    height: 40,
-    content: (
-      <div className="flex h-full items-center justify-between px-4">
-        <span className="text-orange-400">◷</span>
-        <span className="font-mono text-sm tabular-nums text-orange-400">{time}</span>
-      </div>
-    ),
-  }),
-  music: (title: string, artist: string): IslandView => ({
-    key: "music",
-    width: 320,
-    height: 84,
-    radius: 32,
-    content: (
-      <div className="flex h-full items-center gap-3 px-4">
-        <span className="size-12 rounded-xl bg-gradient-to-br from-fuchsia-500 to-orange-400" />
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">{title}</p>
-          <p className="truncate text-xs text-white/50">{artist}</p>
-        </div>
-        <div className="flex h-6 items-end gap-[3px]">
-          {[0, 1, 2, 3].map((i) => (
-            <motion.span
-              key={i}
-              className="w-[3px] rounded-full bg-fuchsia-400"
-              animate={{ height: [6, 22, 10, 18, 6] }}
-              transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
-            />
-          ))}
-        </div>
+      <div className={cn(label, "flex h-full flex-col justify-center px-5")}>
+        <span>{title}</span>
+        <span className="font-normal opacity-50">{detail}</span>
       </div>
     ),
   }),

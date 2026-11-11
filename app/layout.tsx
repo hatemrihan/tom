@@ -1,21 +1,10 @@
+import { Track } from "./Track";
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Open_Sans, Special_Gothic_Expanded_One } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const openSans = Open_Sans({
-  variable: "--font-open-sans",
-  subsets: ["latin"],
-  weight: ["300", "400", "800"],
-  display: "swap",
-});
-const display = Special_Gothic_Expanded_One({
-  variable: "--font-special-gothic",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
 
 const SITE_URL = "https://tomm.one";
 const SOCIAL = {
@@ -55,18 +44,22 @@ export const metadata: Metadata = {
     title: "TOM — Hatem Rihan, Software Engineer",
     description:
       "Full-stack products, scalable systems and open-source React components by Hatem Rihan.",
-    images: [{ url: "/logo.svg", alt: "TOM" }],
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "TOM, the mark and the name Hatem Rihan" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "TOM — Hatem Rihan, Software Engineer",
     description: "Full-stack products and open-source React components.",
-    images: ["/logo.svg"],
+    images: ["/og.png"],
     creator: "@hatemrihan",
   },
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-32.png", sizes: "32x32", type: "image/png" },
+    ],
     shortcut: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest",
   robots: {
@@ -100,7 +93,7 @@ const structuredData = {
   jobTitle: "Software Engineer",
   description:
     "Software engineer specializing in full-stack development, system architecture and interactive UI.",
-  image: `${SITE_URL}/logo.svg`,
+  image: `${SITE_URL}/og.png`,
   sameAs: Object.values(SOCIAL),
   knowsAbout: [
     "Software Engineering",
@@ -117,13 +110,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${openSans.variable} ${display.variable} antialiased overflow-x-hidden`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden`}
       >
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
         {children}
+        <Track />
       </body>
     </html>
   );

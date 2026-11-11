@@ -2,13 +2,14 @@
 
 import { useId } from "react";
 import { motion } from "motion/react";
-import { cn } from "../_lib/cn";
 
 export type OrbState = "idle" | "listening" | "thinking" | "speaking";
 
 export interface LiquidGlassOrbProps {
   state?: OrbState;
   size?: number;
+  /** Live loudness from 0 to 1 (for example from a Web Audio analyser). The orb swells with it. */
+  level?: number;
   /** Three colours for the liquid inside the orb. */
   colors?: [string, string, string];
   className?: string;
@@ -28,6 +29,7 @@ const MOTION: Record<OrbState, { speed: number; amp: number; scale: number[] }> 
 export function LiquidGlassOrb({
   state = "idle",
   size = 160,
+  level = 0,
   colors = ["#7c5cff", "#21d4fd", "#ff5fa2"],
   className,
 }: LiquidGlassOrbProps) {
@@ -35,10 +37,11 @@ export function LiquidGlassOrb({
   const m = MOTION[state];
 
   return (
+    <div className={className} style={{ width: size, height: size, transform: `scale(${1 + Math.min(1, Math.max(0, level)) * 0.16})`, transition: "transform 90ms linear" }}>
     <motion.div
       role="img"
       aria-label={`Assistant is ${state}`}
-      className={cn("relative", className)}
+      className="relative"
       style={{ width: size, height: size }}
       animate={{ scale: m.scale }}
       transition={{ duration: m.speed / 2, repeat: Infinity, ease: "easeInOut" }}
@@ -94,5 +97,6 @@ export function LiquidGlassOrb({
         />
       )}
     </motion.div>
+    </div>
   );
 }

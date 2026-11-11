@@ -6,7 +6,7 @@ import { cn } from "../_lib/cn";
 export interface SignatureProps {
   /**
    * One or more SVG path `d` strings, drawn in order.
-   * Defaults to a hand-drawn "Hatem".
+   * Defaults to a hand-drawn "Tom".
    */
   paths?: string[];
   viewBox?: string;
@@ -19,16 +19,12 @@ export interface SignatureProps {
 }
 
 const DEFAULT_PATHS = [
-  // H
-  "M14 22 C 16 40, 15 58, 13 74 M 13 48 C 24 46, 34 45, 44 46 M 42 18 C 43 38, 44 58, 46 76",
-  // a
-  "M76 54 C 66 46, 56 54, 58 64 C 60 74, 74 70, 78 58 C 78 64, 80 72, 88 72",
-  // t
-  "M100 30 C 100 46, 98 62, 104 72 C 108 76, 114 72, 116 68 M 90 46 C 98 45, 108 44, 118 44",
-  // e
-  "M126 62 C 136 62, 146 58, 144 52 C 140 44, 126 50, 126 62 C 126 74, 140 76, 150 68",
+  // T
+  "M12 24 C 28 20, 44 20, 60 22 M 36 22 C 35 40, 36 58, 34 76",
+  // o
+  "M84 52 C 72 50, 66 62, 72 70 C 80 78, 94 70, 90 58 C 88 52, 84 50, 80 54",
   // m + flourish
-  "M158 72 C 160 62, 160 54, 162 50 C 166 46, 172 50, 172 60 L 172 72 M 172 58 C 176 48, 186 46, 188 56 L 190 72 C 196 78, 230 74, 260 60",
+  "M104 72 C 106 62, 106 54, 108 50 C 112 46, 118 50, 118 60 L 118 72 M 118 58 C 122 48, 132 46, 134 56 L 136 72 C 142 78, 176 74, 206 60",
 ];
 
 /**
@@ -37,7 +33,7 @@ const DEFAULT_PATHS = [
  */
 export function Signature({
   paths = DEFAULT_PATHS,
-  viewBox = "0 0 270 90",
+  viewBox = "0 0 216 90",
   duration = 2200,
   strokeWidth = 2.6,
   className,

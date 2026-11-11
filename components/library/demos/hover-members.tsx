@@ -2,19 +2,19 @@
 
 import { HoverMembers } from "../hover-members/hover-members";
 
+/** Public-domain portraits, via Wikimedia Commons. */
 export default function HoverMembersDemo() {
   return (
-    <div className="w-full rounded-2xl bg-neutral-950 px-4 py-10 text-white">
+    <div className="w-full rounded-2xl bg-white px-4 py-10 text-neutral-900">
       <HoverMembers
-        title="TOM Studio"
+        title="Physics"
         members={[
-          { name: "Hatem", role: "Design engineer", image: "/images/hatem-image.jpg" },
-          { name: "Jayash", role: "Client · Branding", image: "/images/JayashOne-image.jpg" },
-          { name: "Unlimited", role: "Client · E‑commerce", image: "/images/UnlimitedOne-image.jpg" },
-          { name: "Farag", role: "Client · Photography", image: "/images/FaragOne-image.png" },
-          { name: "Nader", role: "Client · Coaching", image: "/images/NaderOne-image.png" },
-          { name: "Atelier", role: "Packaging", image: "/images/JayashThree-image.png" },
-          { name: "Archive", role: "Art direction", image: "/images/FaragThree-image.png" },
+          { name: "Feynman", role: "Quantum electrodynamics", image: "/people/feynman.jpg" },
+          { name: "Curie", role: "Radioactivity", image: "/people/curie.jpg" },
+          { name: "Einstein", role: "Relativity", image: "/people/einstein.jpg" },
+          { name: "Bohr", role: "Atomic structure", image: "/people/bohr.jpg" },
+          { name: "Dirac", role: "Quantum mechanics", image: "/people/dirac.jpg" },
+          { name: "Tesla", role: "Alternating current", image: "/people/tesla.jpg" },
         ]}
       />
     </div>

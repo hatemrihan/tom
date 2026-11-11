@@ -5,27 +5,30 @@ import { DynamicIsland, islandViews } from "../dynamic-island/dynamic-island";
 
 const VIEWS = {
   idle: islandViews.idle(),
-  ring: islandViews.ring("Hatem Rihan"),
-  timer: islandViews.timer("04:59"),
-  music: islandViews.music("Midnight Commit", "The Refactors"),
+  copied: islandViews.status("Copied to clipboard"),
+  publishing: islandViews.progress("Publishing", 0.64),
+  live: islandViews.notice("Version 1.2 is live", "26 components, 3 new"),
 };
-
 type Key = keyof typeof VIEWS;
 
 export default function DynamicIslandDemo() {
   const [view, setView] = useState<Key>("idle");
+
   return (
-    <div className="flex w-full flex-col items-center gap-8">
-      <div className="flex h-24 items-start">
+    <div className="flex w-full flex-col items-center gap-8 text-[11px] font-medium uppercase tracking-[0.01em]">
+      <div className="flex h-16 items-start">
         <DynamicIsland view={VIEWS[view]} />
       </div>
-      <div className="flex gap-1 rounded-full border border-neutral-200 bg-white p-1 dark:border-neutral-800 dark:bg-neutral-900">
+      <div className="flex gap-5">
         {(Object.keys(VIEWS) as Key[]).map((k) => (
           <button
             key={k}
             type="button"
+            aria-pressed={k === view}
             onClick={() => setView(k)}
-            className={`rounded-full px-3 py-1 text-xs capitalize transition ${k === view ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900" : "text-neutral-500 hover:text-neutral-900 dark:hover:text-white"}`}
+            className={`cursor-pointer uppercase outline-none transition-colors focus-visible:underline ${
+              k === view ? "text-neutral-900 underline underline-offset-4 dark:text-white" : "text-neutral-400 hover:text-neutral-900 dark:hover:text-white"
+            }`}
           >
             {k}
           </button>

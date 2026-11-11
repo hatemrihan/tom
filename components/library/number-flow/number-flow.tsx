@@ -24,7 +24,7 @@ export function NumberFlow({ value, format, locale = "en-US", className }: Numbe
   const chars = Array.from(parts);
 
   return (
-    <span className={cn("inline-flex items-baseline tabular-nums", className)} aria-label={parts} role="text">
+    <span className={cn("inline-flex items-center tabular-nums", className)} aria-label={parts} role="text">
       <AnimatePresence initial={false} mode="popLayout">
         {chars.map((ch, i) => {
           const key = `${chars.length - i}`;
@@ -58,7 +58,7 @@ export function NumberFlow({ value, format, locale = "en-US", className }: Numbe
               initial={{ opacity: 0, scale: 0.6 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.6 }}
-              className="inline-block leading-[1.15em]"
+              className="inline-block h-[1.15em] leading-[1.15em]"
               aria-hidden
             >
               {ch === " " ? " " : ch}

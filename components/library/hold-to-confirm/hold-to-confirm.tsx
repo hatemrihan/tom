@@ -103,7 +103,7 @@ export function HoldToConfirm({
       onBlur={cancel}
       whileTap={confirmed ? undefined : { scale: 0.97 }}
       className={cn(
-        "relative isolate inline-flex h-10 min-w-44 touch-none select-none items-center justify-center overflow-hidden rounded-xl px-4 text-sm font-medium",
+        "relative isolate inline-flex h-9 min-w-40 cursor-pointer touch-none select-none items-center justify-center overflow-hidden rounded-full px-4 text-[11px] font-medium uppercase tracking-[0.01em]",
         "border border-red-500/30 bg-red-50 text-red-600 outline-none transition-colors",
         "focus-visible:ring-2 focus-visible:ring-red-500/40 focus-visible:ring-offset-2",
         "dark:border-red-500/30 dark:bg-red-500/10 dark:text-red-400",

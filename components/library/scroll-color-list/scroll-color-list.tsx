@@ -153,7 +153,7 @@ export function ScrollColorList({ items, focus = 0.55, tick = false, className }
               >
                 <span
                   className={cn(
-                    "whitespace-nowrap text-[clamp(2.4rem,7vw,5.5rem)] font-medium leading-[1.15] tracking-[-0.045em] transition-colors duration-300",
+                    "whitespace-nowrap text-[clamp(1.6rem,4vw,2.75rem)] font-medium leading-[1.2] tracking-[-0.035em] transition-colors duration-300",
                     isActive ? "text-neutral-950" : "text-black/[0.13]"
                   )}
                 >
@@ -185,15 +185,15 @@ export function ScrollColorList({ items, focus = 0.55, tick = false, className }
       </div>
 
       {/* Preview card */}
-      <div className="pointer-events-none absolute bottom-6 right-6 hidden aspect-[4/5] w-[min(26%,320px)] overflow-hidden rounded-3xl bg-neutral-100 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] md:block">
+      <div className="pointer-events-none absolute inset-y-6 right-6 hidden w-[min(38%,360px)] md:block">
         <AnimatePresence initial={false}>
           {current?.image && (
             <motion.img
               key={current.image + active}
               src={current.image}
               alt=""
-              className="absolute inset-0 h-full w-full object-cover"
-              initial={{ opacity: 0, scale: 1.08, filter: "blur(8px)" }}
+              className="absolute inset-0 h-full w-full rounded-xl object-contain object-right"
+              initial={{ opacity: 0, scale: 1.04, filter: "blur(8px)" }}
               animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}

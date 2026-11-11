@@ -73,8 +73,8 @@ export function validateContact(input: Partial<ContactInput>): FieldErrors {
   if (input.companyName && input.companyName.length > LIMITS.companyName)
     errors.companyName = "Company name is too long.";
 
-  if (!input.projectType) errors.projectType = "Pick the closest project type.";
-  else if (!PROJECT_TYPES.some((p) => p.value === input.projectType))
+  // Optional: the public form no longer asks for it.
+  if (input.projectType && !PROJECT_TYPES.some((p) => p.value === input.projectType))
     errors.projectType = "Unknown project type.";
 
   if (input.message && input.message.length > LIMITS.message)

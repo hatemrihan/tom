@@ -1,0 +1,25 @@
+name: tomm
+description: "Simple, direct Flutter widgets with motion: tickets with real QR codes, hold to confirm, scroll reveals, a currency converter and more."
+version: 0.1.2
+homepage: https://tomm.one/components
+repository: https://github.com/hatemrihan/tom/tree/main/flutter/tom_components
+issue_tracker: https://github.com/hatemrihan/tom/issues
+topics:
+  - ui
+  - widget
+  - animation
+
+environment:
+  sdk: ^3.13.5
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.6.0
+  qr: ^4.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0

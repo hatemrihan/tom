@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { adminClient } from "@/lib/supabase/server";
-import { clientIp, rateLimit } from "@/lib/admin-auth";
+import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { validateContact, type ContactInput } from "@/lib/contact";
 
 export const dynamic = "force-dynamic";

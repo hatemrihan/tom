@@ -20,7 +20,7 @@ export interface TextRevealScrollProps {
  */
 export function TextRevealScroll({ text, container, className }: TextRevealScrollProps) {
   const ref = useRef<HTMLParagraphElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, container, offset: ["start 0.85", "end 0.4"] });
+  const { scrollYProgress } = useScroll({ target: ref, container, offset: ["start 0.9", "center 0.5"] });
   const words = text.split(/\s+/);
 
   return (

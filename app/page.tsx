@@ -1,7 +1,8 @@
 import First from "./sections/First";
-import Nav from "./sections/Nav";
-import Explore from "./sections/Exolore";
-import Footer from "./sections/Footer";
+import { registry } from "@/components/library/registry";
+import { DocsNav } from "./components/_ui/DocsNav";
+import { WorkWithMe } from "./components/_ui/DocsChrome";
+import Work from "./sections/Work";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -16,10 +17,12 @@ export const metadata: Metadata = {
 export default function Home() {
   return (
     <>
-    <Nav />
+    <DocsNav count={registry.length} theme={false} surface="bg-white/85" />
     <First />
-   <Explore />
-   <Footer />
+    <Work />
+    <div className="bg-white px-6 pb-24 text-neutral-900">
+      <WorkWithMe />
+    </div>
     </>
   );
 }

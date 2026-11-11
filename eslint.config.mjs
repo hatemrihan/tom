@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The npm package is built from components/library; its copies are generated.
+    "packages/**",
+    "flutter/**",
+    "admin/**",
   ]),
 ]);
 

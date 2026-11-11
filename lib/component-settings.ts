@@ -1,6 +1,6 @@
 import "server-only";
 import { registry, type RegistryEntry } from "@/components/library/registry";
-import { adminClient, isDatabaseConfigured, publicClient } from "@/lib/supabase/server";
+import { isDatabaseConfigured, publicClient } from "@/lib/supabase/server";
 
 /** Fields the admin can override per component. */
 export interface ComponentOverride {
@@ -56,23 +56,7 @@ export async function getOverrides(): Promise<Record<string, ComponentOverride>>
   }
 }
 
-/** Merge the given fields into the slug's override (undefined fields are left as they are). */
-export async function saveOverride({ slug, name, description, hidden, featured, order }: ComponentOverride) {
-  const fields = Object.fromEntries(
-    Object.entries({ name, description, hidden, featured, sort_order: order }).filter(([, v]) => v !== undefined)
-  );
-  const { error } = await adminClient()
-    .from(TABLE)
-    .upsert({ ...fields, slug, updated_at: new Date().toISOString() }, { onConflict: "slug" });
-  if (error) throw new Error(error.message);
-}
-
-export async function resetOverride(slug: string) {
-  const { error } = await adminClient().from(TABLE).delete().eq("slug", slug);
-  if (error) throw new Error(error.message);
-}
-
-/** Registry merged with admin overrides, sorted. `includeHidden` for admin. */
+/** Registry merged with the saved overrides, sorted. */
 export async function getResolvedRegistry({ includeHidden = false } = {}): Promise<ResolvedEntry[]> {
   const overrides = await getOverrides();
   const featuredDefault = new Set(["hold-to-confirm", "receipt-printer", "liquid-glass-logo"]);
@@ -91,8 +75,4 @@ export async function getResolvedRegistry({ includeHidden = false } = {}): Promi
     })
     .filter((e) => includeHidden || !e.hidden)
     .sort((a, b) => a.order - b.order);
-}
-
-export function isKnownSlug(slug: string) {
-  return registry.some((e) => e.slug === slug);
 }
