@@ -164,14 +164,18 @@ class _SwapConverterState extends State<SwapConverter> {
               .toList()
             ..sort()),
         ];
-    const figure = TextStyle(
-      fontSize: 48,
-      height: 1,
-      letterSpacing: -2,
-      fontWeight: FontWeight.w500,
-      color: Tom.ink,
-      fontFeatures: [FontFeature.tabularFigures()],
-      decoration: TextDecoration.none,
+    // Start from the app's own text style so the amounts use the app's font.
+    final base = DefaultTextStyle.of(context).style;
+    final figure = base.merge(
+      const TextStyle(
+        fontSize: 48,
+        height: 1,
+        letterSpacing: -2,
+        fontWeight: FontWeight.w500,
+        color: Tom.ink,
+        fontFeatures: [FontFeature.tabularFigures()],
+        decoration: TextDecoration.none,
+      ),
     );
     final quiet = Tom.label(color: Tom.muted, weight: FontWeight.w400);
 
@@ -183,7 +187,7 @@ class _SwapConverterState extends State<SwapConverter> {
               value: codes.contains(code) ? code : null,
               isDense: true,
               icon: const SizedBox.shrink(),
-              style: Tom.label(color: Tom.muted),
+              style: base.merge(Tom.label(color: Tom.muted)),
               items: [
                 for (final c in codes)
                   DropdownMenuItem(value: c, child: Text(c)),

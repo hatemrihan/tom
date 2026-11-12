@@ -111,8 +111,12 @@ class _Line extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Measure in the same font the line is drawn in.
     final painter = TextPainter(
-      text: TextSpan(text: label, style: style),
+      text: TextSpan(
+        text: label,
+        style: DefaultTextStyle.of(context).style.merge(style),
+      ),
       textDirection: TextDirection.ltr,
       maxLines: 1,
     )..layout();

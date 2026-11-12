@@ -8,6 +8,18 @@ topics:
   - ui
   - widget
   - animation
+  - components
+  - motion
+
+screenshots:
+  - description: Admission and event tickets with real, scannable QR codes.
+    path: screenshots/tickets.png
+  - description: Hold to confirm, music toggle and number flow.
+    path: screenshots/controls.png
+  - description: A currency converter on live exchange rates.
+    path: screenshots/converter.png
+  - description: A knockout bracket drawn like a fixture list.
+    path: screenshots/bracket.png
 
 environment:
   sdk: ^3.13.5

@@ -97,7 +97,11 @@ class _Reel extends StatelessWidget {
     final line = (style.fontSize ?? 14) * (style.height ?? 1.15);
     // Tabular figures share one width; measure it so the reel has a fixed box.
     final measure = TextPainter(
-      text: TextSpan(text: '0', style: style),
+      // Measured in the font the digits are drawn in, so the columns sit tight.
+      text: TextSpan(
+        text: '0',
+        style: DefaultTextStyle.of(context).style.merge(style),
+      ),
       textDirection: TextDirection.ltr,
     )..layout();
     final width = measure.width;

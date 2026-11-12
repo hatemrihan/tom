@@ -67,15 +67,18 @@ class _DevourInputState extends State<DevourInput>
 
   @override
   Widget build(BuildContext context) {
-    final style =
-        (widget.style ??
-                const TextStyle(
-                  fontSize: 34,
-                  height: 1.2,
-                  letterSpacing: -1,
-                  fontWeight: FontWeight.w400,
-                ))
-            .copyWith(color: widget.color, decoration: TextDecoration.none);
+    // Start from the app's own text style so the field uses the app's font.
+    final style = DefaultTextStyle.of(context).style
+        .merge(
+          widget.style ??
+              const TextStyle(
+                fontSize: 34,
+                height: 1.2,
+                letterSpacing: -1,
+                fontWeight: FontWeight.w400,
+              ),
+        )
+        .copyWith(color: widget.color, decoration: TextDecoration.none);
     final chars = _eating.characters.toList();
 
     return Container(
