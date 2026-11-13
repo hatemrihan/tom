@@ -24,7 +24,7 @@ const handle = "@" + site.social.x.split("/").pop();
 /** Top navigation for the components docs. */
 export function DocsNav({ count, theme = true, surface = "bg-[#fafafa]/85 dark:bg-stone-900/85" }: { count: number; /** Show the light/dark switch (the components docs have a dark theme; other pages do not). */ theme?: boolean; /** Backdrop behind the bar. */ surface?: string }) {
   const pathname = usePathname();
-  const home = pathname === "/components";
+  const home = pathname === "/";
 
   return (
     <header className={cn("sticky top-0 z-40 text-[11px] font-medium uppercase leading-[1.35] tracking-[0.01em] backdrop-blur-md", surface)}>
@@ -38,10 +38,10 @@ export function DocsNav({ count, theme = true, surface = "bg-[#fafafa]/85 dark:b
             aria-label="Docs"
             className="flex h-9 items-center gap-0.5 rounded-full border border-neutral-200 bg-white/85 px-1 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-12px_rgba(0,0,0,0.12)] backdrop-blur-md dark:border-white/10 dark:bg-neutral-900/80"
           >
-            <Link href="/components#all" className={cn(link, "hidden sm:inline-flex", home && "text-neutral-900 dark:text-white")}>
+            <Link href="/#all" className={cn(link, "hidden sm:inline-flex", home && "text-neutral-900 dark:text-white")}>
               Components
             </Link>
-            <Link href="/#work" className={cn(link, "hidden md:inline-flex")}>
+            <Link href="/work" className={cn(link, "hidden md:inline-flex")}>
               Work
             </Link>
             <a href={site.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className={link}>
@@ -52,7 +52,7 @@ export function DocsNav({ count, theme = true, surface = "bg-[#fafafa]/85 dark:b
               <XIcon className="size-3" />
               <span className="hidden lg:inline">{handle}</span>
             </a>
-            <Link href="/components#all" className={cn(link, "tabular-nums")} aria-label={`${count} components`}>
+            <Link href="/#all" className={cn(link, "tabular-nums")} aria-label={`${count} components`}>
               <span className="relative flex size-1.5">
                 <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
@@ -69,7 +69,7 @@ export function DocsNav({ count, theme = true, surface = "bg-[#fafafa]/85 dark:b
           </nav>
 
           <Link
-            href="/components#all"
+            href="/#all"
             className="inline-flex h-9 items-center rounded-full bg-neutral-900 px-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.18)] transition hover:bg-neutral-700 active:scale-[0.97] dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200"
           >
             Build

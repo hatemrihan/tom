@@ -16,7 +16,7 @@ export function WorkWithMe() {
         <Link href="/contact" className="underline-offset-4 hover:underline">
           Get in touch ↗
         </Link>
-        <Link href="/#work" className="underline-offset-4 hover:underline">
+        <Link href="/work" className="underline-offset-4 hover:underline">
           See the work ↗
         </Link>
       </p>

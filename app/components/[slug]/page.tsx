@@ -94,7 +94,7 @@ export default async function ComponentPage({ params }: Params) {
 
   return (
     <main className="w-full max-w-[920px] pb-24 pt-8">
-      <Link href="/components#all" className="mb-6 inline-block text-neutral-400 transition hover:text-neutral-900 dark:hover:text-white lg:hidden">
+      <Link href="/#all" className="mb-6 inline-block text-neutral-400 transition hover:text-neutral-900 dark:hover:text-white lg:hidden">
         ← All components
       </Link>
 

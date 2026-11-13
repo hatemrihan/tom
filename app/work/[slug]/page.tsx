@@ -36,7 +36,7 @@ export default async function WorkPage({ params }: Params) {
     <main className="min-h-dvh bg-white px-6 pb-28 pt-6 text-[11px] font-medium uppercase leading-[1.35] tracking-[0.01em] text-neutral-900 sm:px-10">
       <div className="mx-auto max-w-[1400px]">
         <nav className="flex items-center justify-between">
-          <Link href="/#work" className="underline-offset-4 hover:underline">
+          <Link href="/work" className="underline-offset-4 hover:underline">
             ← Work
           </Link>
           <span className="font-normal text-neutral-500">

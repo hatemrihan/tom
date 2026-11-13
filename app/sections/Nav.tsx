@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 const MENU = [
-  { href: "/", label: "Home" },
-  { href: "/components", label: "Components" },
+  { href: "/", label: "Components" },
+  { href: "/work", label: "Work" },
   { href: "/contact", label: "Contact" },
 ];
 
@@ -38,7 +38,7 @@ const Nav = () => {
           TOM
         </Link>
         <div className="flex items-center gap-6 text-sm uppercase tracking-wide">
-          <Link href="/components" className="hidden items-center gap-1 transition-colors hover:text-gray-600 sm:flex">
+          <Link href="/" className="hidden items-center gap-1 transition-colors hover:text-gray-600 sm:flex">
             Components <span aria-hidden>↗</span>
           </Link>
           <Link href="/contact" className="flex items-center gap-1 transition-colors hover:text-gray-600">

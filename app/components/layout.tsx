@@ -9,11 +9,9 @@ export const metadata: Metadata = {
   },
   description:
     "Open-source React components with motion — buttons, text effects, cards, backgrounds and more. TypeScript + Tailwind CSS, free to copy and use.",
-  alternates: { canonical: "/components" },
   openGraph: {
     title: "TOM Components",
     description: "Open-source, motion-rich React components. Copy, paste, ship.",
-    url: "/components",
   },
 };
 
