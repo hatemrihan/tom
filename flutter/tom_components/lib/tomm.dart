@@ -34,3 +34,4 @@ export 'src/tick_scrollbar.dart';
 export 'src/tom_qr.dart';
 export 'src/tom_style.dart';
 export 'src/topographic_flow.dart';
+export 'src/words_preloader.dart';

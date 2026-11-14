@@ -31,6 +31,8 @@ export interface RegistryEntry {
   notes?: string[];
   /** Dart file of the Flutter edition, inside flutter/tom_components/lib/src. */
   flutter?: string;
+  /** Has a motion edition: an editable timeline in components/motion/specs. */
+  motion?: boolean;
   /** Preview canvas height in px. */
   previewHeight?: number;
   /** Pin the preview to the top when it opens a menu downward. */
@@ -178,6 +180,22 @@ export const registry: RegistryEntry[] = [
     previewHeight: 620,
     flutter: "stairs_preloader.dart",
     added: "2026-11-06",
+  },
+  {
+    slug: "words-preloader",
+    name: "Words Preloader",
+    description: "Says a few words, one at a time, then the cover lifts away with a bowed edge to reveal the page.",
+    category: "Feedback",
+    files: ["words-preloader/words-preloader.tsx"],
+    dependencies: BASE,
+    notes: [
+      "Every frame is worked out from the time alone. Pass `time` to scrub it yourself, which is how the Motion tab drives it.",
+      "The words can be in any language and any script.",
+    ],
+    previewHeight: 460,
+    flutter: "words_preloader.dart",
+    motion: true,
+    added: "2026-11-14",
   },
 
   /* ------------------------------- Batch 4 -------------------------------- */

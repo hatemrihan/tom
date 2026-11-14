@@ -4,7 +4,7 @@
 [![downloads](https://img.shields.io/npm/dm/tomm-ui.svg?color=1c1917)](https://www.npmjs.com/package/tomm-ui)
 [![license: MIT](https://img.shields.io/badge/license-MIT-1c1917.svg)](https://www.npmjs.com/package/tomm-ui)
 
-The small details people remember. 29 React components with motion, each one taken from a real product and cleaned up until nothing was left to remove.
+The small details people remember. 30 React components with motion, each one taken from a real product and cleaned up until nothing was left to remove.
 
 **[See every one moving at tomm.one/components](https://tomm.one/components)**
 
@@ -74,6 +74,7 @@ Each name links to its page.
 | [Liquid Glass Orb](https://tomm.one/components/liquid-glass-orb) | An AI assistant orb: coloured liquid merges inside glass, reacting to each state. |
 | [Dynamic Island](https://tomm.one/components/dynamic-island) | A small pill that springs between sizes to say the small things: saved, copied, publishing, live. |
 | [Stairs Preloader](https://tomm.one/components/stairs-preloader) | Counts to 100, then lifts away as a staircase to reveal the page. |
+| [Words Preloader](https://tomm.one/components/words-preloader) | Says a few words, one at a time, then the cover lifts away with a bowed edge to reveal the page. |
 | [Signature](https://tomm.one/components/signature) | An SVG signature that draws itself at a constant pen speed. |
 | [Number Flow](https://tomm.one/components/number-flow) | Digits spin like reels to their new value; formatting is handled by Intl. |
 | [Scroll Text Reveal](https://tomm.one/components/text-reveal-scroll) | Words light up one by one as the paragraph scrolls past. |

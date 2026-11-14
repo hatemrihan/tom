@@ -1,10 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { track } from "@/lib/track";
 import { cn } from "@/lib/utils";
 
 type Edition = "react" | "flutter";
+type Tab = Edition | "motion";
 
 const KEY = "tom-edition";
 const EVENT = "tom-edition-change";
@@ -26,69 +27,77 @@ function read(): Edition {
   }
 }
 
-/**
- * The two editions of a component, side by side behind one switch: TypeScript
- * on the left, Dart on the right. The choice is remembered, so someone working
- * in Flutter sees Dart on every component page.
- */
-export function Editions({ react, flutter }: { react: React.ReactNode; flutter: React.ReactNode }) {
-  const edition = useSyncExternalStore(subscribe, read, () => "react" as Edition);
-  const dart = edition === "flutter";
+const HINTS: Record<Tab, string> = {
+  react: "React, in TypeScript and Tailwind",
+  flutter: "Flutter, in Dart",
+  motion: "A motion graphic: edit it, add your own image or video, download it",
+};
 
-  const choose = (next: Edition) => {
+/**
+ * The editions of a component behind one row of tabs: TypeScript, Dart and,
+ * where there is one, Motion. The choice of language is remembered, so someone
+ * working in Flutter sees Dart on every component page. Motion is opened per
+ * page and is only loaded once it is asked for.
+ */
+export function Editions({ react, flutter, motion }: { react: React.ReactNode; flutter?: React.ReactNode; motion?: React.ReactNode }) {
+  const saved = useSyncExternalStore(subscribe, read, () => "react" as Edition);
+  const [inMotion, setInMotion] = useState(false);
+  const [opened, setOpened] = useState(false);
+  const tab: Tab = inMotion && motion ? "motion" : saved === "flutter" && flutter ? "flutter" : "react";
+
+  const choose = (next: Tab) => {
+    if (next === "motion") {
+      setOpened(true);
+      setInMotion(true);
+      return;
+    }
+    setInMotion(false);
     try {
       window.localStorage.setItem(KEY, next);
     } catch {}
     window.dispatchEvent(new Event(EVENT));
-    if (next !== edition) track("switch", { edition: next });
+    if (next !== saved) track("switch", { edition: next });
   };
+
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "react", label: "TypeScript" },
+    ...(flutter ? [{ id: "flutter" as const, label: "Dart" }] : []),
+    ...(motion ? [{ id: "motion" as const, label: "Motion" }] : []),
+  ];
 
   return (
     <section className="mt-16">
       <div className="mb-8 flex items-end justify-between gap-6 border-b border-neutral-200 pb-3 dark:border-neutral-800">
         <div>
-          <h2 className="text-neutral-900 dark:text-white">Use it</h2>
-          <p className="font-normal text-neutral-500">{dart ? "Flutter, in Dart" : "React, in TypeScript and Tailwind"}</p>
+          <h2 className="text-neutral-900 dark:text-white">{tab === "motion" ? "Make it yours" : "Use it"}</h2>
+          <p className="font-normal text-neutral-500">{HINTS[tab]}</p>
         </div>
 
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => choose("react")}
-            aria-pressed={!dart}
-            className={cn("cursor-pointer uppercase transition-colors", dart ? "font-normal text-neutral-400 hover:text-neutral-900 dark:hover:text-white" : "text-neutral-900 dark:text-white")}
-          >
-            TypeScript
-          </button>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={dart}
-            aria-label="Show the Dart edition"
-            onClick={() => choose(dart ? "react" : "flutter")}
-            className="relative h-[18px] w-8 shrink-0 cursor-pointer rounded-full bg-neutral-900 outline-offset-2 dark:bg-white"
-          >
-            <span
+        <div role="tablist" aria-label="Edition" className="flex shrink-0 items-center gap-4">
+          {tabs.map((t) => (
+            <button
+              key={t.id}
+              type="button"
+              role="tab"
+              aria-selected={t.id === tab}
+              onClick={() => choose(t.id)}
               className={cn(
-                "absolute left-[3px] top-[3px] size-3 rounded-full bg-white transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] dark:bg-neutral-900",
-                dart && "translate-x-[14px]",
+                "relative cursor-pointer uppercase transition-colors",
+                t.id === tab ? "text-neutral-900 dark:text-white" : "font-normal text-neutral-400 hover:text-neutral-900 dark:hover:text-white",
               )}
-            />
-          </button>
-          <button
-            type="button"
-            onClick={() => choose("flutter")}
-            aria-pressed={dart}
-            className={cn("cursor-pointer uppercase transition-colors", dart ? "text-neutral-900 dark:text-white" : "font-normal text-neutral-400 hover:text-neutral-900 dark:hover:text-white")}
-          >
-            Dart
-          </button>
+            >
+              {t.label}
+              {/* the active tab sits on the rule under the row */}
+              <span className={cn("absolute inset-x-0 -bottom-[13px] h-px bg-neutral-900 transition-opacity dark:bg-white", t.id === tab ? "opacity-100" : "opacity-0")} />
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* both stay in the page so switching is instant and neither loses its place */}
-      <div hidden={dart}>{react}</div>
-      <div hidden={!dart}>{flutter}</div>
+      {/* all stay in the page so switching is instant and none loses its place */}
+      <div hidden={tab !== "react"}>{react}</div>
+      {flutter && <div hidden={tab !== "flutter"}>{flutter}</div>}
+      {motion && opened && <div hidden={tab !== "motion"}>{motion}</div>}
     </section>
   );
 }

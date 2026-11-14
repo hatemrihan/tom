@@ -36,4 +36,5 @@ export const previews: Record<string, ComponentType> = {
   "text-reveal-scroll": dynamic(() => import("./demos/text-reveal-scroll"), { ssr: false, loading }),
   "tick-scrollbar": dynamic(() => import("./demos/tick-scrollbar"), { ssr: false, loading }),
   "topographic-flow": dynamic(() => import("./demos/topographic-flow"), { ssr: false, loading }),
+  "words-preloader": dynamic(() => import("./demos/words-preloader"), { ssr: false, loading }),
 };

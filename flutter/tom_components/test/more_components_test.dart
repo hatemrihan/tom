@@ -322,6 +322,36 @@ void main() {
     expect(find.text('Page'), findsOneWidget);
   });
 
+  testWidgets('WordsPreloader says each word, lifts and reports completion', (
+    tester,
+  ) async {
+    var done = false;
+    await tester.pumpWidget(
+      host(
+        SizedBox(
+          width: 400,
+          height: 300,
+          child: WordsPreloader(
+            words: const ['Hello', 'Bonjour', 'Ciao'],
+            onComplete: () => done = true,
+            child: const Center(child: Text('Page')),
+          ),
+        ),
+      ),
+    );
+    expect(find.text('Hello'), findsOneWidget);
+    expect(find.text('LOADING'), findsOneWidget);
+    // The second word arrives once the first has had its time.
+    await tester.pump(const Duration(milliseconds: 1050));
+    expect(find.text('Bonjour'), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 180));
+    expect(find.text('Ciao'), findsOneWidget);
+    await tester.pumpAndSettle(const Duration(milliseconds: 100));
+    expect(done, isTrue);
+    expect(find.text('LOADING'), findsNothing);
+    expect(find.text('Page'), findsOneWidget);
+  });
+
   testWidgets('DevourInput swallows the text and submits it', (tester) async {
     String? sent;
     await tester.pumpWidget(

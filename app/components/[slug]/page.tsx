@@ -9,6 +9,7 @@ import { PreviewFrame } from "../_ui/PreviewFrame";
 import { CodeTabs, CopyButton, type CodeFile } from "../_ui/CodeTabs";
 import { WorkWithMe } from "../_ui/DocsChrome";
 import { Editions } from "../_ui/Editions";
+import { MotionTab } from "../_ui/MotionTab";
 
 const NPM_INSTALL = "npm i tomm-ui";
 const PUB_INSTALL = "flutter pub add tomm";
@@ -106,8 +107,8 @@ export default async function ComponentPage({ params }: Params) {
 
       <PreviewFrame slug={slug} height={entry.previewHeight ?? 340} align={entry.previewAlign} />
 
-      {dart.length > 0 ? (
-        <Editions react={reactSteps} flutter={flutterSteps} />
+      {dart.length > 0 || entry.motion ? (
+        <Editions react={reactSteps} flutter={dart.length > 0 ? flutterSteps : undefined} motion={entry.motion ? <MotionTab slug={slug} /> : undefined} />
       ) : (
         <section className="mt-16">
           <h2 className="mb-6 text-neutral-900 dark:text-white">Use it</h2>

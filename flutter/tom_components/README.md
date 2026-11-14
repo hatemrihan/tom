@@ -4,7 +4,7 @@
 [![license: MIT](https://img.shields.io/badge/license-MIT-1c1917.svg)](https://pub.dev/packages/tomm/license)
 [![platforms](https://img.shields.io/badge/platforms-android%20%C2%B7%20ios%20%C2%B7%20web%20%C2%B7%20desktop-1c1917.svg)](https://pub.dev/packages/tomm)
 
-The small details people remember. 29 Flutter widgets with motion, each one taken from a real product and cleaned up until nothing was left to remove.
+The small details people remember. 30 Flutter widgets with motion, each one taken from a real product and cleaned up until nothing was left to remove.
 
 [![Tickets with real QR codes](https://tomm.one/packages/tickets.png)](https://tomm.one/components)
 
@@ -76,6 +76,7 @@ Each name links to its page, with a live preview and the full source.
 | [`LiquidGlassOrb`](https://tomm.one/components/liquid-glass-orb) | An AI assistant orb: coloured liquid merges inside glass, reacting to each state. |
 | [`DynamicIsland`](https://tomm.one/components/dynamic-island) | A small pill that springs between sizes to say the small things: saved, copied, publishing, live. |
 | [`StairsPreloader`](https://tomm.one/components/stairs-preloader) | Counts to 100, then lifts away as a staircase to reveal the page. |
+| [`WordsPreloader`](https://tomm.one/components/words-preloader) | Says a few words, one at a time, then the cover lifts away with a bowed edge to reveal the page. |
 | [`Signature`](https://tomm.one/components/signature) | A signature that draws itself at a constant pen speed. |
 | [`NumberFlow`](https://tomm.one/components/number-flow) | Digits spin like reels to their new value, with prefix, suffix and thousands separators. |
 | [`TextRevealScroll`](https://tomm.one/components/text-reveal-scroll) | Words light up one by one as the paragraph scrolls past. |

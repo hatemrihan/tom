@@ -63,7 +63,7 @@ dart run tomm list
 dart run tomm add hold_to_confirm music_toggle
 ```
 
-All 29 widgets pass the Flutter analyzer and a suite of widget tests:
+All 30 widgets pass the Flutter analyzer and a suite of widget tests:
 
 ```bash
 cd flutter/tom_components
